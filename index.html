@@ -8,32 +8,218 @@
     </style>
   </head>
   <body>
+    <script src="js/jquery-1.9.1.min.js"></script>
     <script src="js/three.min.js"></script>
+    <script src="js/tween.min.js"></script>
+    <script src="js/three.js/TrackballControls.js"></script>
+    <script src="js/three.js/Projector.js"></script>
     <script>
-      var scene = new THREE.Scene();
-      var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+    var aspect = width/height;
+    var near = 1;
+    var far = 10000;
+    var angle = 45;
+    var tween = null;
 
-      var renderer = new THREE.WebGLRenderer();
-      renderer.setSize( window.innerWidth, window.innerHeight );
-      document.body.appendChild( renderer.domElement );
+    var createRenderer = function(){
+        var renderer =  new THREE.WebGLRenderer(
+            { antialias: true }
+        );
+        renderer.setSize(width,height);
+        return renderer;
+    }
 
-      var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-      var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-      var cube = new THREE.Mesh( geometry, material );
-      scene.add( cube );
+    var createCamera = function(){
+        var camera = new THREE.PerspectiveCamera(
+            angle, aspect, near, far);
+        camera.position.x = -200;
+        camera.position.y = 100;
+        camera.position.z = 1500;
+        return camera;
+    }
 
-      camera.position.z = 5;
+    var createControls = function(){
+        var controls =
+            new THREE.TrackballControls( camera );
 
-      var render = function () {
-        requestAnimationFrame( render );
+        controls.rotateSpeed = 1.0;
+        controls.zoomSpeed = 1.2;
+        controls.panSpeed = 0.8;
+        controls.noZoom = false;
+        controls.noPan = false;
+        controls.staticMoving = true;
+        controls.dynamicDampingFactor = 0.3;
+        return controls;
+    }
 
-        cube.rotation.x += 0.1;
-        cube.rotation.y += 0.1;
+    var createScene = function(){
+        var scene = new THREE.Scene();
+        return scene;
+    }
 
-        renderer.render(scene, camera);
-      };
+    var createLight = function(){
+        var light =
+            new THREE.AmbientLight( 0xffffff );
+        light.position.set( 0, 500, 2000 );
+        return light;
+    }
 
-      render();
+    var createCubes = function(){
+        var geometry =
+            new THREE.CubeGeometry( 100, 100, 100 );
+
+        var objects = [];
+        for ( var i = 0; i < 40; i ++ ) {
+
+            var object =
+                new THREE.Mesh( geometry,
+                    new THREE.MeshLambertMaterial(
+                        {
+                            color: Math.random() *
+                                0xffffff } ) );
+
+            object.material.ambient =
+                object.material.color;
+
+            object.position.x =
+                (i%10 * 110) - 500;
+
+            object.position.y =
+                (i/10) * 110;
+
+            object.position.z =
+                500;
+
+
+
+            object.castShadow = true;
+            object.receiveShadow = true;
+            objects.push( object );
+        }
+        return objects;
+    };
+
+    var createPlane = function(){
+        var plane =
+            new THREE.Mesh(
+                new THREE.PlaneGeometry(
+                    2000,
+                    2000, 8, 8 ),
+                new THREE.MeshBasicMaterial(
+                    {
+                        color: 0x000000,
+                        opacity: 0.25,
+                        transparent: true,
+                        wireframe: true } ) );
+        plane.visible = false;
+        return plane;
+    }
+
+    var scene = createScene();
+    var camera = createCamera();
+    var controls = createControls();
+
+    var light = createLight();
+    var cubes = createCubes();
+    var renderer = createRenderer();
+
+    var projector = new THREE.Projector();
+    var mouse = new THREE.Vector2()
+
+
+    scene.add(light);
+
+    for(var index=0;index<cubes.length;index++){
+        scene.add(cubes[index]);
+    }
+
+    scene.add(createPlane());
+
+    var render = function(){
+        renderer.render(scene,camera);
+        TWEEN.update();
+    }
+    var animate = function(){
+        requestAnimationFrame(animate);
+        controls.update();
+        render();
+    }
+
+    animate();
+
+
+    var container = $('body').append('<div>');
+    $(container).append( renderer.domElement);
+
+    $(container).mousedown(function(event){
+        event.preventDefault();
+
+        //FIXME - Figure out whether 2 here and 0.5
+        // in the line below are related
+        mouse.x = ( event.clientX /
+            window.innerWidth ) * 2 - 1;
+        mouse.y = - ( event.clientY /
+            window.innerHeight ) * 2 + 1;
+
+
+        //FIXME - Figure out logic behind 0.5
+        var vector =
+            new THREE.Vector3(mouse.x,mouse.y,0.5);
+
+        projector.unprojectVector( vector, camera );
+
+        var raycaster = new THREE.Raycaster(
+            camera.position,
+            vector.sub(camera.position).normalize()
+        );
+
+
+        var intersects =
+            raycaster.intersectObjects( cubes );
+
+        if ( intersects.length > 0 ) {
+            var selectedObject = intersects[0].object;
+            //console.log('Few Objects Selected '+intersects.length);
+            //console.log(selectedObject);
+            //intersects[0].object.material.color.setHex(0x000000);
+            var position = {
+                x:selectedObject.position.x,
+                y:selectedObject.position.y,
+                z:selectedObject.position.z
+            };
+            var target = {
+                x:selectedObject.position.x,
+                y:selectedObject.position.y,
+                z:selectedObject.position.z
+            };
+            if(event.ctrlKey){
+                target.z+=100;
+            }
+            else{
+                target.z-=100;
+            }
+
+            tween =
+                new TWEEN.
+                     Tween(position).
+                     to(target, 1000);
+
+            tween.start();
+
+            tween.onUpdate(function(){
+                selectedObject.position.z = this.z;
+                selectedObject.needsUpdate =
+                    true;
+            });
+
+        } else {
+            //console.log('No Objects Selected');
+        }
+
+    });
     </script>
+    <div>
+    </div>
   </body>
 </html>
