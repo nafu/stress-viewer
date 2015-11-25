@@ -155,6 +155,10 @@
     $(container).mousedown(function(event){
         event.preventDefault();
 
+        for(var index = 0; index < 10; index++) {
+          cubes[index].visible = false;
+        }
+
         //FIXME - Figure out whether 2 here and 0.5
         // in the line below are related
         mouse.x = ( event.clientX /
