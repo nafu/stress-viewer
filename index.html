@@ -157,10 +157,6 @@
     $(container).mousedown(function(event){
         event.preventDefault();
 
-        for(var index = 0; index < 10; index++) {
-          cubes[index].visible = false;
-        }
-
         //FIXME - Figure out whether 2 here and 0.5
         // in the line below are related
         mouse.x = ( event.clientX /
@@ -181,14 +177,26 @@
         );
 
 
+        var array_values = new Array();
+        for (key in cubes) {
+          array_values.push(cubes[key]);
+        }
         var intersects =
-            raycaster.intersectObjects( cubes );
+            raycaster.intersectObjects( array_values );
 
         if ( intersects.length > 0 ) {
             var selectedObject = intersects[0].object;
             //console.log('Few Objects Selected '+intersects.length);
             //console.log(selectedObject);
             //intersects[0].object.material.color.setHex(0x000000);
+            from = selectedObject.ref_id - 5
+            console.log(from);
+            to = selectedObject.ref_id + 4
+            console.log(to);
+            for(var index = from; index < to + 1; index++) {
+              cubes[index].visible = false;
+            }
+
             var position = {
                 x:selectedObject.position.x,
                 y:selectedObject.position.y,
