@@ -286,14 +286,14 @@
             }
 
             for (var i = 0; i < moveObjects.length; i++) {
-              moveTween(moveObjects[i]);
+              moveTween(moveObjects[i], selectedObject.position);
             }
 
         } else {
             //console.log('No Objects Selected');
         }
 
-        function moveTween(object) {
+        function moveTween(object, clicked) {
             var position = {
                 x:object.position.x,
                 y:object.position.y,
@@ -308,7 +308,8 @@
                 target.z+=10;
             }
             else{
-                target.z-=10;
+                target.x = parseFloat(clicked.x) + parseFloat(position.z - 0.5);
+                target.z = -position.x;
             }
 
             tween =
@@ -319,6 +320,7 @@
             tween.start();
 
             tween.onUpdate(function(){
+                object.position.x = this.x;
                 object.position.z = this.z;
                 object.needsUpdate = true;
             });
