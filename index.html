@@ -13,6 +13,7 @@
     <script src="js/tween.min.js"></script>
     <script src="js/three.js/TrackballControls.js"></script>
     <script src="js/three.js/Projector.js"></script>
+    <script src="js/soundjs-0.6.1.min.js"></script>
     <script>
     var width = window.innerWidth;
     var height = window.innerHeight;
@@ -189,6 +190,16 @@
         return plane;
     }
 
+    // Sound
+    var soundID = 'Swoosh';
+    function loadSound() {
+      createjs.Sound.registerSound('./sounds/swoosh.mp3', soundID);
+    }
+    function playSound() {
+      createjs.Sound.play(soundID);
+    }
+    loadSound();
+
     var scene = createScene();
     var camera = createCamera();
     var controls = createControls();
@@ -232,6 +243,9 @@
 
     $(container).mousedown(function(event){
         event.preventDefault();
+
+        // Sound
+        playSound();
 
         //FIXME - Figure out whether 2 here and 0.5
         // in the line below are related
