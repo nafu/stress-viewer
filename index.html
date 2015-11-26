@@ -65,40 +65,38 @@
         return light;
     }
 
-    var createCubes = function(){
+    var createCube = function(id, x, y, z) {
         var geometry =
             new THREE.CubeGeometry( 100, 100, 100 );
 
+        var object =
+            new THREE.Mesh( geometry,
+                new THREE.MeshLambertMaterial(
+                    {
+                        color: Math.random() *
+                            0xffffff } ) );
+
+        object.material.ambient = object.material.color;
+
+        object.position.x = x;
+        object.position.y = y;
+        object.position.z = z;
+
+        object.castShadow = true;
+        object.receiveShadow = true;
+
+        object.ref_id = id;
+
+        return object;
+    }
+
+    var createCubes = function(){
         var objects = {};
         for ( var i = 0; i < 40; i ++ ) {
-
-            var object =
-                new THREE.Mesh( geometry,
-                    new THREE.MeshLambertMaterial(
-                        {
-                            color: Math.random() *
-                                0xffffff } ) );
-
-            object.material.ambient =
-                object.material.color;
-
-            object.position.x =
-                (i%10 * 110) - 500;
-
-            object.position.y =
-                (i/10) * 110;
-
-            object.position.z =
-                500;
-
-
-
-            object.castShadow = true;
-            object.receiveShadow = true;
-
-            object.ref_id = i;
+            var object = createCube(i, (i%10 * 110) - 500, (i/10) * 110, 500);
             objects[object.ref_id] = object;
         }
+
         return objects;
     };
 
