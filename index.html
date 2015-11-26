@@ -65,7 +65,7 @@
         return light;
     }
 
-    var createCube = function(id, x, y, z) {
+    var createCube = function(id, x, y, z, color) {
         var geometry =
             new THREE.CubeGeometry( 1, 1, 1 );
 
@@ -73,8 +73,8 @@
             new THREE.Mesh( geometry,
                 new THREE.MeshLambertMaterial(
                     {
-                        color: Math.random() *
-                            0xffffff } ) );
+                        color: color
+                    } ) );
 
         object.material.ambient = object.material.color;
 
@@ -113,7 +113,36 @@
                     tarr.push(data[j]);
                 }
 
-                var object = createCube(tarr[0], tarr[1], tarr[2], tarr[3]);
+                // TODO: Contour color generator
+                var color;
+                if (tarr[7] > 0) {
+                  console.log(tarr[7]);
+                  color = 0x0000ff;
+                }
+                if (tarr[7] >= 1.69e-003) {
+                  color = 0x0088ff;
+                }
+                if (tarr[7] >= 1.74e-003) {
+                  color = 0x00ffff;
+                }
+                if (tarr[7] >= 1.86e-003) {
+                  color = 0x00ff00;
+                }
+                if (tarr[7] >= 1.88e-003) {
+                  color = 0xffff00;
+                }
+                if (tarr[7] >= 1.93e-003) {
+                  color = 0xff8800;
+                }
+                if (tarr[7] >= 1.98e-003) {
+                  color = 0xff0000;
+                }
+
+                // Render partial parts
+                // if (i % 100 > 50) {
+                //   continue;
+                // }
+                var object = createCube(tarr[0], tarr[1], tarr[2], tarr[3], color);
                 objects[object.ref_id] = object;
 
                 lines.push(tarr);
