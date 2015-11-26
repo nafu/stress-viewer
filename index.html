@@ -115,28 +115,69 @@
 
                 // TODO: Contour color generator
                 var color;
+                max = 0.001977217;
+                min = 0.000000039293;
+                var hsv2rgb = function(h, s, v) {
+                  // adapted from http://schinckel.net/2012/01/10/hsv-to-rgb-in-javascript/
+                  var rgb, i, data = [];
+                  if (s === 0) {
+                    rgb = [v,v,v];
+                  } else {
+                    h = h / 60;
+                    i = Math.floor(h);
+                    data = [v*(1-s), v*(1-s*(h-i)), v*(1-s*(1-(h-i)))];
+                    switch(i) {
+                      case 0:
+                        rgb = [v, data[2], data[0]];
+                        break;
+                      case 1:
+                        rgb = [data[1], v, data[0]];
+                        break;
+                      case 2:
+                        rgb = [data[0], v, data[2]];
+                        break;
+                      case 3:
+                        rgb = [data[0], data[1], v];
+                        break;
+                      case 4:
+                        rgb = [data[2], data[0], v];
+                        break;
+                      default:
+                        rgb = [v, data[0], data[1]];
+                        break;
+                    }
+                  }
+                  return '#' + rgb.map(function(x){
+                    return ("0" + Math.round(x*255).toString(16)).slice(-2);
+                  }).join('');
+                };
                 if (tarr[7] > 0) {
-                  console.log(tarr[7]);
                   color = 0x0000ff;
                 }
-                if (tarr[7] >= 1.69e-003) {
+                if (tarr[7] >= 1.68e-003) {
                   color = 0x0088ff;
                 }
-                if (tarr[7] >= 1.74e-003) {
+                if (tarr[7] >= 1.73e-003) {
                   color = 0x00ffff;
                 }
-                if (tarr[7] >= 1.86e-003) {
+                if (tarr[7] >= 1.85e-003) {
                   color = 0x00ff00;
                 }
-                if (tarr[7] >= 1.88e-003) {
+                if (tarr[7] >= 1.87e-003) {
                   color = 0xffff00;
                 }
-                if (tarr[7] >= 1.93e-003) {
+                if (tarr[7] >= 1.92e-003) {
                   color = 0xff8800;
                 }
-                if (tarr[7] >= 1.98e-003) {
+                if (tarr[7] >= max) {
                   color = 0xff0000;
                 }
+                // 240 - 0 is blue to red
+                h = 240 - ((tarr[7] - min)/(max - min)) * 240
+                if (isNaN(h)) {
+                  h = 0;
+                }
+                color = hsv2rgb(h, 1, 1);
 
                 // Render partial parts
                 // if (i % 100 > 50) {
