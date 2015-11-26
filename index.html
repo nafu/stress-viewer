@@ -9,6 +9,7 @@
     </style>
   </head>
   <body>
+    <script src="js/debug-utility.js"></script>
     <script src="js/jquery-1.9.1.min.js"></script>
     <script src="js/three.min.js"></script>
     <script src="js/tween.min.js"></script>
@@ -274,8 +275,8 @@
 
         if ( intersects.length > 0 ) {
             var selectedObject = intersects[0].object;
-            //console.log('Few Objects Selected '+intersects.length);
-            //console.log(selectedObject);
+            //log('Few Objects Selected '+intersects.length);
+            //log(selectedObject);
             //intersects[0].object.material.color.setHex(0x000000);
             var moveObjects = [];
             for (key in cubes) {
@@ -307,7 +308,7 @@
             }
 
         } else {
-            //console.log('No Objects Selected');
+            //log('No Objects Selected');
         }
 
         function moveTween(object, clicked) {
@@ -353,16 +354,16 @@
     renderer.domElement.addEventListener('touchend', touchend, false );
 
     function onDocumentMouseMove(event) {
-        console.log('MouseMove');
+        log('MouseMove');
         event.preventDefault();
         DRAGGING = true;
     }
     function onDocumentMouseDown(event) {
-        console.log('MouseDown');
+        log('MouseDown');
         event.preventDefault();
     }
     function onDocumentMouseUp(event) {
-        console.log('MouseUp');
+        log('MouseUp');
         event.preventDefault();
 
         if (DRAGGING) {
@@ -372,15 +373,15 @@
     }
 
     function touchmove(event) {
-        console.log('touchmove');
+        log('touchmove');
         event.preventDefault();
         DRAGGING = true;
     }
     function touchstart(event) {
-        console.log('touchstart');
+        log('touchstart');
     }
     function touchend(event) {
-        console.log('touchend');
+        log('touchend');
         event.preventDefault();
 
         if (DRAGGING) {
