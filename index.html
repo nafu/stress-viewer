@@ -151,27 +151,6 @@
                     return ("0" + Math.round(x*255).toString(16)).slice(-2);
                   }).join('');
                 };
-                if (tarr[7] > 0) {
-                  color = 0x0000ff;
-                }
-                if (tarr[7] >= 1.68e-003) {
-                  color = 0x0088ff;
-                }
-                if (tarr[7] >= 1.73e-003) {
-                  color = 0x00ffff;
-                }
-                if (tarr[7] >= 1.85e-003) {
-                  color = 0x00ff00;
-                }
-                if (tarr[7] >= 1.87e-003) {
-                  color = 0xffff00;
-                }
-                if (tarr[7] >= 1.92e-003) {
-                  color = 0xff8800;
-                }
-                if (tarr[7] >= max) {
-                  color = 0xff0000;
-                }
                 // 240 - 0 is blue to red
                 h = 240 - ((tarr[7] - min)/(max - min)) * 240
                 if (isNaN(h)) {
