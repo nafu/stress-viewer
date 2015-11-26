@@ -185,6 +185,9 @@
 
     for(key in cubes) {
         scene.add(cubes[key]);
+        var edge = new THREE.EdgesHelper(cubes[key], 0xffffff);
+        edge.material.linewidth = 0.5;
+        scene.add(edge);
     }
 
     scene.add(createPlane());
