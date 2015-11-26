@@ -241,7 +241,7 @@
     animate();
 
     // TODO: Need to refactor
-    var detectCubes = function(event) {
+    var getIntersects = function(event) {
         //FIXME - Figure out whether 2 here and 0.5
         // in the line below are related
         mouse.x = ( event.clientX /
@@ -272,43 +272,11 @@
         var intersects =
             raycaster.intersectObjects( array_values );
 
-        if ( intersects.length > 0 ) {
-          return true;
-        }
-        return false;
+        return intersects;
     }
 
     var cutVoxels = function(event) {
-        //FIXME - Figure out whether 2 here and 0.5
-        // in the line below are related
-        mouse.x = ( event.clientX /
-            window.innerWidth ) * 2 - 1;
-        mouse.y = - ( event.clientY /
-            window.innerHeight ) * 2 + 1;
-        if (event.changedTouches && event.changedTouches.length > 0) {
-            mouse.x = (event.changedTouches[0].clientX / window.innerWidth) * 2 - 1;
-            mouse.y = - (event.changedTouches[0].clientY / window.innerHeight) * 2 + 1;
-        }
-
-
-        //FIXME - Figure out logic behind 0.5
-        var vector =
-            new THREE.Vector3(mouse.x,mouse.y,0.5);
-
-        vector.unproject(camera);
-
-        var raycaster = new THREE.Raycaster(
-            camera.position,
-            vector.sub(camera.position).normalize()
-        );
-
-
-        var array_values = new Array();
-        for (key in cubes) {
-          array_values.push(cubes[key]);
-        }
-        var intersects =
-            raycaster.intersectObjects( array_values );
+        var intersects = getIntersects(event);
 
         if ( intersects.length > 0 ) {
             var selectedObject = intersects[0].object;
@@ -399,7 +367,7 @@
     function onDocumentMouseDown(event) {
         log('MouseDown');
         event.preventDefault();
-        if (detectCubes(event)) {
+        if (getIntersects(event).length > 0) {
             controls.enabled = false;
         }
     }
@@ -423,7 +391,7 @@
     function touchstart(event) {
         log('touchstart');
         event.preventDefault();
-        if (detectCubes(event)) {
+        if (getIntersects(event).length > 0) {
             controls.enabled = false;
         }
     }
