@@ -222,6 +222,8 @@
         render();
     }
 
+    var movedObjects = [];
+
     animate();
 
 
@@ -265,9 +267,21 @@
             //intersects[0].object.material.color.setHex(0x000000);
             var moveObjects = [];
             for (key in cubes) {
-              if (cubes[key].position.x == selectedObject.position.x) {
-                // cubes[key].visible = false;
-                moveObjects.push(cubes[key]);
+              if (event.ctrlKey) {
+                if (cubes[key].position.x >= selectedObject.position.x) {
+                  index = movedObjects.indexOf(cubes[key])
+                  if (index > -1) {
+                    moveObjects.push(cubes[key]);
+                    movedObjects.splice(index, 1);
+                  }
+                }
+              } else {
+                if (cubes[key].position.x >= selectedObject.position.x) {
+                  if ($.inArray(cubes[key], movedObjects) == -1) {
+                    moveObjects.push(cubes[key]);
+                    movedObjects.push(cubes[key]);
+                  }
+                }
               }
             }
 
