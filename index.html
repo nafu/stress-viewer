@@ -91,13 +91,37 @@
     }
 
     var createCubes = function(){
-        var objects = {};
-        for ( var i = 0; i < 40; i ++ ) {
-            var object = createCube(i, (i%10 * 110) - 500, (i/10) * 110, 500);
-            objects[object.ref_id] = object;
-        }
+        var data = $.ajax({
+            type: "GET",
+            url: "data/mises.csv",
+            dataType: "text",
+            async: false
+        }).responseText;
 
-        return objects;
+        return processData(data);
+
+        function processData(allText) {
+            var objects = {};
+
+            var allTextLines = allText.split(/\r\n|\n/);
+            var lines = [];
+
+            for (var i = 0; i < allTextLines.length; i++) {
+                var data = allTextLines[i].split(',');
+                var tarr = [];
+                for (var j = 0; j < 8; j++) {
+                    tarr.push(data[j]);
+                }
+
+                var object = createCube(tarr[0], tarr[1], tarr[2], tarr[3]);
+                objects[object.ref_id] = object;
+
+                lines.push(tarr);
+            }
+            // alert(lines);
+
+            return objects;
+        }
     };
 
     var createPlane = function(){
