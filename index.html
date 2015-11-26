@@ -243,12 +243,10 @@
             //console.log('Few Objects Selected '+intersects.length);
             //console.log(selectedObject);
             //intersects[0].object.material.color.setHex(0x000000);
-            from = selectedObject.ref_id - 5
-            console.log(from);
-            to = selectedObject.ref_id + 4
-            console.log(to);
-            for(var index = from; index < to + 1; index++) {
-              cubes[index].visible = false;
+            for (key in cubes) {
+              if (cubes[key].position.x >= selectedObject.position.x) {
+                cubes[key].visible = false;
+              }
             }
 
             var position = {
