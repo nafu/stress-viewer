@@ -203,6 +203,7 @@
     var scene = createScene();
     var camera = createCamera();
     var controls = createControls();
+    controls.enabled = false;
 
     var light = createLight();
     var cubes = createCubes();
@@ -237,13 +238,7 @@
 
     animate();
 
-
-    var container = $('body').append('<div>');
-    $(container).append( renderer.domElement);
-
-    $(container).mousedown(function(event){
-        event.preventDefault();
-
+    var cutVoxels = function(event) {
         // Sound
         playSound();
 
@@ -339,7 +334,15 @@
                 object.needsUpdate = true;
             });
         }
+    }
 
+    var container = $('body').append('<div>');
+    $(container).append( renderer.domElement);
+
+    $(container).mousedown(function(event){
+        event.preventDefault();
+
+        cutVoxels(event);
     });
     </script>
     <div>
