@@ -263,44 +263,51 @@
             //console.log('Few Objects Selected '+intersects.length);
             //console.log(selectedObject);
             //intersects[0].object.material.color.setHex(0x000000);
+            var moveObjects = [];
             for (key in cubes) {
-              if (cubes[key].position.x >= selectedObject.position.x) {
-                cubes[key].visible = false;
+              if (cubes[key].position.x == selectedObject.position.x) {
+                // cubes[key].visible = false;
+                moveObjects.push(cubes[key]);
               }
             }
 
+            for (var i = 0; i < moveObjects.length; i++) {
+              moveTween(moveObjects[i]);
+            }
+
+        } else {
+            //console.log('No Objects Selected');
+        }
+
+        function moveTween(object) {
             var position = {
-                x:selectedObject.position.x,
-                y:selectedObject.position.y,
-                z:selectedObject.position.z
+                x:object.position.x,
+                y:object.position.y,
+                z:object.position.z
             };
             var target = {
-                x:selectedObject.position.x,
-                y:selectedObject.position.y,
-                z:selectedObject.position.z
+                x:object.position.x,
+                y:object.position.y,
+                z:object.position.z
             };
             if(event.ctrlKey){
-                target.z+=100;
+                target.z+=10;
             }
             else{
-                target.z-=100;
+                target.z-=10;
             }
 
             tween =
                 new TWEEN.
                      Tween(position).
-                     to(target, 1000);
+                     to(target, 100);
 
             tween.start();
 
             tween.onUpdate(function(){
-                selectedObject.position.z = this.z;
-                selectedObject.needsUpdate =
-                    true;
+                object.position.z = this.z;
+                object.needsUpdate = true;
             });
-
-        } else {
-            //console.log('No Objects Selected');
         }
 
     });
