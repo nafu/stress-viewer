@@ -353,6 +353,7 @@
     renderer.domElement.addEventListener('touchstart', touchstart, false );
     renderer.domElement.addEventListener('touchend', touchend, false );
 
+    // Mouse
     function onDocumentMouseMove(event) {
         log('MouseMove');
         event.preventDefault();
@@ -372,6 +373,7 @@
         }
     }
 
+    // Touch
     function touchmove(event) {
         log('touchmove');
         event.preventDefault();
