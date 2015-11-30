@@ -233,6 +233,14 @@
     animate();
 
     var getIntersects = function(event) {
+      // Return empty array if detecting multi-touch
+      log('getIntersects');
+      log(event);
+      if (event.changedTouches.length > 1) {
+        log('multi-touch detected');
+        return [];
+      }
+
       //FIXME - Figure out whether 2 here and 0.5
       // in the line below are related
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
