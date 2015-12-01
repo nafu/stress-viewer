@@ -25,6 +25,8 @@
     var angle = 45;
     var tween = null;
     var DRAGGING = null;
+    var DRAGGING_TIME_MS = 0;
+    var timerID;
 
     var createRenderer = function(){
       var renderer =  new THREE.WebGLRenderer(
@@ -383,6 +385,8 @@
     function touchstart(event) {
       log('touchstart');
       event.preventDefault();
+      DRAGGING_TIME_MS = 0;
+      timerID = setInterval('countup()', 1);
       if (getIntersects(event).length > 0) {
         controls.enabled = false;
       }
@@ -392,11 +396,19 @@
       event.preventDefault();
       controls.enabled = true;
 
-      if (DRAGGING) {
+      if (DRAGGING && DRAGGING_TIME_MS < 10) {
         cutVoxels(event);
         DRAGGING = null;
       }
+      clearInterval(timerID);
+      DRAGGING_TIME_MS = 0;
     }
+
+   function countup() {
+     log('countup');
+     log(DRAGGING_TIME_MS);
+     DRAGGING_TIME_MS++;
+   }
 
     var container = $('body').append('<div>');
     $(container).append( renderer.domElement);
