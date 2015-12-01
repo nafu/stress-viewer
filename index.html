@@ -162,6 +162,7 @@
           //   continue;
           // }
           var object = createCube(tarr[0], tarr[1], tarr[2], tarr[3], color);
+          if (object.ref_id == "") continue;
           objects[object.ref_id] = object;
 
           lines.push(tarr);
