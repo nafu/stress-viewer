@@ -270,17 +270,22 @@
     }
 
     var cutVoxels = function(event) {
+      log('cutVoxels');
       var intersects = getIntersects(event);
 
       if ( intersects.length > 0 ) {
+        log('intersects[0]');
+        log(intersects[0]);
+        var point = intersects[0].point
         var selectedObject = intersects[0].object;
         //log('Few Objects Selected '+intersects.length);
         //log(selectedObject);
         //intersects[0].object.material.color.setHex(0x000000);
         var moveObjects = [];
+
         for (key in cubes) {
           if (event.ctrlKey) {
-            if (cubes[key].position.x >= selectedObject.position.x) {
+            if (cubes[key].position.x >= point.x) {
               index = movedObjects.indexOf(cubes[key])
               if (index > -1) {
                 moveObjects.push(cubes[key]);
@@ -288,7 +293,7 @@
               }
             }
           } else {
-            if (cubes[key].position.x >= selectedObject.position.x) {
+            if (cubes[key].position.x >= point.x) {
               if ($.inArray(cubes[key], movedObjects) == -1) {
                 moveObjects.push(cubes[key]);
                 movedObjects.push(cubes[key]);
