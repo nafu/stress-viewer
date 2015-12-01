@@ -236,7 +236,7 @@
       // Return empty array if detecting multi-touch
       log('getIntersects');
       log(event);
-      if (event.changedTouches.length > 1) {
+      if (event.changedTouches && event.changedTouches.length > 1) {
         log('multi-touch detected');
         return [];
       }
