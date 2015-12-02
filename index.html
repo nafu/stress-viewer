@@ -83,7 +83,9 @@
     }
 
     var createCube = function(id, x, y, z, color) {
-      var geometry = new THREE.CubeGeometry( 1, 1, 1 );
+      // For bone-mises
+      // var geometry = new THREE.CubeGeometry(0.14, 0.14, 0.14);
+      var geometry = new THREE.CubeGeometry(1, 1, 1);
       var material = new THREE.MeshLambertMaterial(
         { color: color }
       );
@@ -120,6 +122,10 @@
         var lines = [];
 
         for (var i = 0; i < allTextLines.length; i++) {
+          // For bone-mises
+          // if (i % 100 !== 0) {
+          //   continue;
+          // }
           var data = allTextLines[i].split(',');
           var tarr = [];
           for (var j = 0; j < 8; j++) {
@@ -130,6 +136,9 @@
           var color;
           max = 0.001977217;
           min = 0.000000039293;
+          // For bone-mises
+          // max = 4.61;
+          // min = 0;
           var hsv2rgb = function(h, s, v) {
             // adapted from http://schinckel.net/2012/01/10/hsv-to-rgb-in-javascript/
             var rgb, i, data = [];
