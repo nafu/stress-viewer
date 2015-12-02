@@ -213,6 +213,7 @@
     loadSound();
 
     var scene = createScene();
+    var group = new THREE.Object3D();
     var camera = createCamera();
     var controls = createControls();
 
@@ -226,15 +227,18 @@
     scene.add(light);
 
     for(key in cubes) {
-      scene.add(cubes[key]);
+      group.add(cubes[key]);
       var edge = new THREE.EdgesHelper(cubes[key], 0xffffff);
       edge.material.linewidth = 0.1;
-      scene.add(edge);
+      group.add(edge);
     }
 
+    scene.add(group);
     scene.add(createPlane());
 
     var render = function(){
+      group.rotation.y += ( targetRotationX - group.rotation.y ) * 0.1;
+
       renderer.render(scene,camera);
       TWEEN.update();
     }
