@@ -286,6 +286,9 @@ var cutVoxels = function(event) {
   if ( intersects.length > 0 ) {
     log('intersects[0]');
     log(intersects[0]);
+    log('intersects[0].faceIndex');
+    log(intersects[0].faceIndex);
+    var faceIndex = intersects[0].faceIndex;
     var point = intersects[0].point
     var selectedObject = intersects[0].object;
     //log('Few Objects Selected '+intersects.length);
@@ -294,19 +297,38 @@ var cutVoxels = function(event) {
     var moveObjects = [];
 
     for (key in cubes) {
-      if (event.ctrlKey) {
-        if (cubes[key].position.x >= point.x) {
-          index = movedObjects.indexOf(cubes[key])
-          if (index > -1) {
-            moveObjects.push(cubes[key]);
-            movedObjects.splice(index, 1);
+      if (faceIndex == 8 || faceIndex == 9) {
+        if (event.ctrlKey) {
+          if (cubes[key].position.x >= point.x) {
+            index = movedObjects.indexOf(cubes[key])
+            if (index > -1) {
+              moveObjects.push(cubes[key]);
+              movedObjects.splice(index, 1);
+            }
+          }
+        } else {
+          if (cubes[key].position.x >= point.x) {
+            if ($.inArray(cubes[key], movedObjects) == -1) {
+              moveObjects.push(cubes[key]);
+              movedObjects.push(cubes[key]);
+            }
           }
         }
-      } else {
-        if (cubes[key].position.x >= point.x) {
-          if ($.inArray(cubes[key], movedObjects) == -1) {
-            moveObjects.push(cubes[key]);
-            movedObjects.push(cubes[key]);
+      } else if (faceIndex == 0 || faceIndex == 1) {
+        if (event.ctrlKey) {
+          if (cubes[key].position.z >= point.z) {
+            index = movedObjects.indexOf(cubes[key])
+            if (index > -1) {
+              moveObjects.push(cubes[key]);
+              movedObjects.splice(index, 1);
+            }
+          }
+        } else {
+          if (cubes[key].position.z >= point.z) {
+            if ($.inArray(cubes[key], movedObjects) == -1) {
+              moveObjects.push(cubes[key]);
+              movedObjects.push(cubes[key]);
+            }
           }
         }
       }
@@ -317,14 +339,14 @@ var cutVoxels = function(event) {
       playSound();
 
       for (var i = 0; i < moveObjects.length; i++) {
-        moveTween(moveObjects[i], selectedObject.position);
+        moveTween(moveObjects[i], selectedObject.position, faceIndex);
       }
     }
   } else {
     log('No Objects Selected');
   }
 
-  function moveTween(object, clicked) {
+  function moveTween(object, clicked, faceIndex) {
     var position = {
       x:object.position.x,
       y:object.position.y,
@@ -335,16 +357,26 @@ var cutVoxels = function(event) {
       y:object.position.y,
       z:object.position.z
     };
-    if (event.ctrlKey) {
-      target.z+=10;
-    } else {
-      target.x = parseFloat(clicked.x) + parseFloat(position.z - 0.5);
-      target.z = -position.x - 10;
-    }
 
+    if (faceIndex == 8 || faceIndex == 9) {
+      if (event.ctrlKey) {
+        target.z+=10;
+      } else {
+        target.x = parseFloat(clicked.x) + parseFloat(position.z - 0.5) + 10;
+        target.z = -position.x - 10;
+      }
+    } else if (faceIndex == 0 || faceIndex == 1) {
+      if (event.ctrlKey) {
+        target.z+=10;
+      } else {
+        target.x = - position.z - 10
+        target.z = parseFloat(clicked.z) + parseFloat(position.x - 0.5) + 10;
+      }
+    }
     tween = new TWEEN.Tween(position).to(target, 100);
     tween.start();
     tween.onUpdate(function(){
+      log('tween.onUpdate');
       object.position.x = this.x;
       object.position.z = this.z;
       object.needsUpdate = true;
