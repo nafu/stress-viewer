@@ -31,9 +31,15 @@
     var far = 10000;
     var angle = 45;
     var tween = null;
+    var MOUSE_DOWN = false;
     var DRAGGING = null;
     var DRAGGING_TIME_MS = 0;
     var timerID;
+
+    var targetRotationX = 0;
+    var targetRotationOnMouseDownX = 0;
+    var mouseX = 0;
+    var mouseXOnMouseDown = 0;
 
     var createRenderer = function(){
       var renderer =  new THREE.WebGLRenderer(
@@ -57,6 +63,7 @@
       controls.rotateSpeed = 1.0;
       controls.zoomSpeed = 1.2;
       controls.panSpeed = 0.8;
+      controls.noRotate = true;
       controls.noZoom = false;
       controls.noPan = false;
       controls.staticMoving = true;
@@ -168,7 +175,7 @@
           // if (i % 100 > 50) {
           //   continue;
           // }
-          var object = createCube(tarr[0], tarr[1], tarr[2], tarr[3], color);
+          var object = createCube(tarr[0], tarr[1] - 5, tarr[2], tarr[3] - 5, color);
           if (object.ref_id == "") continue;
           objects[object.ref_id] = object;
 
@@ -207,6 +214,8 @@
     loadSound();
 
     var scene = createScene();
+    var group = new THREE.Object3D();
+    var edgegroup = new THREE.Object3D();
     var camera = createCamera();
     var controls = createControls();
 
@@ -220,15 +229,19 @@
     scene.add(light);
 
     for(key in cubes) {
-      scene.add(cubes[key]);
+      group.add(cubes[key]);
       var edge = new THREE.EdgesHelper(cubes[key], 0xffffff);
       edge.material.linewidth = 0.1;
-      scene.add(edge);
+      edgegroup.add(edge);
     }
 
+    scene.add(group);
+    scene.add(edgegroup);
     scene.add(createPlane());
 
     var render = function(){
+      group.rotation.y += ( targetRotationX - group.rotation.y ) * 0.1;
+
       renderer.render(scene,camera);
       TWEEN.update();
     }
@@ -339,7 +352,7 @@
           target.z+=10;
         } else {
           target.x = parseFloat(clicked.x) + parseFloat(position.z - 0.5);
-          target.z = -position.x;
+          target.z = -position.x - 10;
         }
 
         tween = new TWEEN.Tween(position).to(target, 100);
@@ -356,6 +369,7 @@
     renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);
     renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
     renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
+    renderer.domElement.addEventListener('mouseout', onDocumentMouseOut, false);
     renderer.domElement.addEventListener('touchmove', touchmove, false );
     renderer.domElement.addEventListener('touchstart', touchstart, false );
     renderer.domElement.addEventListener('touchend', touchend, false );
@@ -365,13 +379,25 @@
       log('MouseMove');
       event.preventDefault();
       DRAGGING = true;
+
+      if (MOUSE_DOWN) {
+        mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+        targetRotationX = targetRotationOnMouseDownX + ( mouseX - mouseXOnMouseDown ) * 3.05;
+
+        log('targetRotationX');
+        log(targetRotationX);
+      }
     }
     function onDocumentMouseDown(event) {
       log('MouseDown');
       event.preventDefault();
+      MOUSE_DOWN = true;
       if (getIntersects(event).length > 0) {
         controls.enabled = false;
       }
+
+      mouseXOnMouseDown = (event.clientX / window.innerWidth) * 2 - 1;
+      targetRotationOnMouseDownX = targetRotationX;
     }
     function onDocumentMouseUp(event) {
       log('MouseUp');
@@ -382,6 +408,13 @@
         cutVoxels(event);
         DRAGGING = null;
       }
+      MOUSE_DOWN = false;
+    }
+    function onDocumentMouseOut(event) {
+      log('MouseOut');
+      event.preventDefault();
+      controls.enabled = true;
+      MOUSE_DOWN = false;
     }
 
     // Touch
@@ -389,15 +422,25 @@
       log('touchmove');
       event.preventDefault();
       DRAGGING = true;
+
+      mouseX = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
+      targetRotationX = targetRotationOnMouseDownX + ( mouseX - mouseXOnMouseDown ) * 3.05;
+
+      log('targetRotationX');
+      log(targetRotationX);
     }
     function touchstart(event) {
       log('touchstart');
+      log(event);
       event.preventDefault();
       DRAGGING_TIME_MS = 0;
       timerID = setInterval('countup()', 1);
       if (getIntersects(event).length > 0) {
         controls.enabled = false;
       }
+
+      mouseXOnMouseDown = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
+      targetRotationOnMouseDownX = targetRotationX;
     }
     function touchend(event) {
       log('touchend');
