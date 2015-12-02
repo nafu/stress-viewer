@@ -11,6 +11,8 @@ var DRAGGING = null;
 var DRAGGING_TIME_MS = 0;
 var timerID;
 
+var moveEventCount = 0;
+
 var firstClickedX = null;
 var firstClickedZ = null;
 
@@ -409,6 +411,10 @@ function onDocumentMouseMove(event) {
   DRAGGING = true;
 
   if (MOUSE_DOWN) {
+    moveEventCount++;
+    log('moveEventCount');
+    log(moveEventCount);
+
     mouseX = (event.clientX / window.innerWidth) * 2 - 1;
     targetRotationX = targetRotationOnMouseDownX + ( mouseX - mouseXOnMouseDown ) * 3.05;
 
@@ -420,6 +426,7 @@ function onDocumentMouseDown(event) {
   log('MouseDown');
   event.preventDefault();
   MOUSE_DOWN = true;
+  moveEventCount = 0;
   if (getIntersects(event).length > 0) {
     controls.enabled = false;
   }
@@ -432,11 +439,12 @@ function onDocumentMouseUp(event) {
   event.preventDefault();
   controls.enabled = true;
 
-  if (DRAGGING) {
+  if (DRAGGING && moveEventCount > 5) {
     cutVoxels(event);
-    DRAGGING = null;
   }
+  DRAGGING = null;
   MOUSE_DOWN = false;
+  moveEventCount = 0;
 }
 function onDocumentMouseOut(event) {
   log('MouseOut');
