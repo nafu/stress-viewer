@@ -35,6 +35,11 @@
     var DRAGGING_TIME_MS = 0;
     var timerID;
 
+    var targetRotationX = 0;
+    var targetRotationOnMouseDownX = 0;
+    var mouseX = 0;
+    var mouseXOnMouseDown = 0;
+
     var createRenderer = function(){
       var renderer =  new THREE.WebGLRenderer(
         { antialias: true, alpha: true }
@@ -390,15 +395,25 @@
       log('touchmove');
       event.preventDefault();
       DRAGGING = true;
+
+      mouseX = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
+      targetRotationX = targetRotationOnMouseDownX + ( mouseX - mouseXOnMouseDown ) * 3.05;
+
+      log('targetRotationX');
+      log(targetRotationX);
     }
     function touchstart(event) {
       log('touchstart');
+      log(event);
       event.preventDefault();
       DRAGGING_TIME_MS = 0;
       timerID = setInterval('countup()', 1);
       if (getIntersects(event).length > 0) {
         controls.enabled = false;
       }
+
+      mouseXOnMouseDown = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
+      targetRotationOnMouseDownX = targetRotationX;
     }
     function touchend(event) {
       log('touchend');
