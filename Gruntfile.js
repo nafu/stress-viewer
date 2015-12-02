@@ -30,6 +30,10 @@ module.exports = function(grunt) {
         files: ['./**/*.css'],
         tasks: [''] // もしCompassなどのタスクがあればここに追加する。
       },
+      js: {
+        files: ['./**/*.js'],
+        tasks: ['']
+      }
     },
     connect: {
       options: {
