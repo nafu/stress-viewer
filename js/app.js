@@ -1,3 +1,4 @@
+// NOTE: Set debugMode to true in debug-utility.js for debugging
 var width = window.innerWidth;
 var height = window.innerHeight;
 var aspect = width/height;
