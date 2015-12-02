@@ -11,6 +11,9 @@ var DRAGGING = null;
 var DRAGGING_TIME_MS = 0;
 var timerID;
 
+var firstClickedX = null;
+var firstClickedZ = null;
+
 var targetRotationX = 0;
 var targetRotationOnMouseDownX = 0;
 var mouseX = 0;
@@ -359,18 +362,24 @@ var cutVoxels = function(event) {
     };
 
     if (faceIndex == 8 || faceIndex == 9) {
+      if (!firstClickedX) {
+        firstClickedX = clicked.x;
+      }
       if (event.ctrlKey) {
         target.z+=10;
       } else {
-        target.x = parseFloat(clicked.x) + parseFloat(position.z - 0.5) + 10;
+        target.x = parseFloat(firstClickedX) + parseFloat(position.z - 0.5) + 10;
         target.z = -position.x - 10;
       }
     } else if (faceIndex == 0 || faceIndex == 1) {
+      if (!firstClickedZ) {
+        firstClickedZ = clicked.x;
+      }
       if (event.ctrlKey) {
         target.z+=10;
       } else {
         target.x = - position.z - 10
-        target.z = parseFloat(clicked.z) + parseFloat(position.x - 0.5) + 10;
+        target.z = parseFloat(firstClickedZ) + parseFloat(position.x - 0.5) + 10;
       }
     }
     tween = new TWEEN.Tween(position).to(target, 100);
