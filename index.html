@@ -31,6 +31,7 @@
     var far = 10000;
     var angle = 45;
     var tween = null;
+    var MOUSE_DOWN = false;
     var DRAGGING = null;
     var DRAGGING_TIME_MS = 0;
     var timerID;
@@ -368,6 +369,7 @@
     renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);
     renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
     renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
+    renderer.domElement.addEventListener('mouseout', onDocumentMouseOut, false);
     renderer.domElement.addEventListener('touchmove', touchmove, false );
     renderer.domElement.addEventListener('touchstart', touchstart, false );
     renderer.domElement.addEventListener('touchend', touchend, false );
@@ -377,13 +379,25 @@
       log('MouseMove');
       event.preventDefault();
       DRAGGING = true;
+
+      if (MOUSE_DOWN) {
+        mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+        targetRotationX = targetRotationOnMouseDownX + ( mouseX - mouseXOnMouseDown ) * 3.05;
+
+        log('targetRotationX');
+        log(targetRotationX);
+      }
     }
     function onDocumentMouseDown(event) {
       log('MouseDown');
       event.preventDefault();
+      MOUSE_DOWN = true;
       if (getIntersects(event).length > 0) {
         controls.enabled = false;
       }
+
+      mouseXOnMouseDown = (event.clientX / window.innerWidth) * 2 - 1;
+      targetRotationOnMouseDownX = targetRotationX;
     }
     function onDocumentMouseUp(event) {
       log('MouseUp');
@@ -394,6 +408,13 @@
         cutVoxels(event);
         DRAGGING = null;
       }
+      MOUSE_DOWN = false;
+    }
+    function onDocumentMouseOut(event) {
+      log('MouseOut');
+      event.preventDefault();
+      controls.enabled = true;
+      MOUSE_DOWN = false;
     }
 
     // Touch
