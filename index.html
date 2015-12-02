@@ -174,7 +174,7 @@
           // if (i % 100 > 50) {
           //   continue;
           // }
-          var object = createCube(tarr[0], tarr[1], tarr[2], tarr[3], color);
+          var object = createCube(tarr[0], tarr[1] - 5, tarr[2], tarr[3] - 5, color);
           if (object.ref_id == "") continue;
           objects[object.ref_id] = object;
 
@@ -349,7 +349,7 @@
           target.z+=10;
         } else {
           target.x = parseFloat(clicked.x) + parseFloat(position.z - 0.5);
-          target.z = -position.x;
+          target.z = -position.x - 10;
         }
 
         tween = new TWEEN.Tween(position).to(target, 100);
