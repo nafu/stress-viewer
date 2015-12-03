@@ -9,7 +9,7 @@ var tween = null;
 var MOUSE_DOWN = false;
 var DRAGGING = null;
 var DRAGGING_TIME_MS = 0;
-var timerID;
+var timerID = 0;
 
 var moveEventCount = 0;
 
@@ -470,7 +470,9 @@ function touchstart(event) {
   log(event);
   event.preventDefault();
   DRAGGING_TIME_MS = 0;
-  timerID = setInterval('countup()', 1);
+  if (!timerID) {
+    timerID = setInterval('countup()', 100);
+  }
   if (getIntersects(event).length > 0) {
     controls.enabled = false;
   }
@@ -488,6 +490,7 @@ function touchend(event) {
     DRAGGING = null;
   }
   clearInterval(timerID);
+  timerID = 0;
   DRAGGING_TIME_MS = 0;
 }
 
