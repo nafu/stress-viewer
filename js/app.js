@@ -476,6 +476,7 @@ function touchstart(event) {
   }
   moveEventCount = 0;
   if (getIntersects(event).length > 0) {
+    // TODO: Cannot detect multi touch correctly on Windows Tablet PC. Big problem.
     controls.enabled = false;
   }
 
