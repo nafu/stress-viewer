@@ -458,6 +458,7 @@ function touchmove(event) {
   log('touchmove');
   event.preventDefault();
   DRAGGING = true;
+  moveEventCount++;
 
   mouseX = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
   targetRotationX = targetRotationOnMouseDownX + ( mouseX - mouseXOnMouseDown ) * 3.05;
@@ -473,6 +474,7 @@ function touchstart(event) {
   if (!timerID) {
     timerID = setInterval('countup()', 100);
   }
+  moveEventCount = 0;
   if (getIntersects(event).length > 0) {
     controls.enabled = false;
   }
@@ -485,7 +487,7 @@ function touchend(event) {
   event.preventDefault();
   controls.enabled = true;
 
-  if (DRAGGING && DRAGGING_TIME_MS < 10) {
+  if (DRAGGING && DRAGGING_TIME_MS < 10 && moveEventCount > 1) {
     cutVoxels(event);
     DRAGGING = null;
   }
