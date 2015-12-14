@@ -426,9 +426,9 @@ function onDocumentMouseMove(event) {
     log(moveEventCount);
 
     mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-    targetRotationX = targetRotationOnMouseDownX + ( mouseX - mouseXOnMouseDown ) * 2.05;
+    targetRotationX = targetRotationOnMouseDownX + ( mouseX - mouseXOnMouseDown ) * 3.05;
 
-    log('targetRotationX = ' + targetRotationX);
+    // log('targetRotationX = ' + targetRotationX);
   }
 }
 function onDocumentMouseDown(event) {
@@ -471,9 +471,9 @@ function touchmove(event) {
   log('moveEventCount = '+moveEventCount);
 
   mouseX = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
-  targetRotationX = targetRotationOnMouseDownX + ( mouseX - mouseXOnMouseDown ) * 3.05;
+  targetRotationX = targetRotationOnMouseDownX + ( mouseX - mouseXOnMouseDown ) * 2.05;
 
-  log('targetRotationX = ' + targetRotationX);
+  // log('targetRotationX = ' + targetRotationX);
 }
 function touchstart(event) {
   log('touchstart');
