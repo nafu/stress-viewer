@@ -45,7 +45,7 @@ var createControls = function(){
   controls.panSpeed = 0.8;
   controls.noRotate = true;
   controls.noZoom = false;
-  controls.noPan = false;
+  controls.noPan = true;
   controls.staticMoving = true;
   controls.dynamicDampingFactor = 0.3;
   return controls;
