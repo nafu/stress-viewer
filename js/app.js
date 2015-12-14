@@ -237,10 +237,10 @@ scene.add(createPlane());
 
 var render = function(){
   log('mouseX - mouseXOnMouseDown = ' + (mouseX - mouseXOnMouseDown));
+  log('targetRotationX - group.rotation.y = ' + (targetRotationX - group.rotation.y));
   if (Math.abs(mouseX - mouseXOnMouseDown) > 0.1 &&
       Math.abs(targetRotationX - group.rotation.y) > 0.5 &&
-      Math.abs(targetRotationX - group.rotation.y) < 2) {
-    log('targetRotationX - group.rotation.y = ' + (targetRotationX - group.rotation.y));
+      Math.abs(targetRotationX - group.rotation.y) < 5) {
     group.rotation.y += ( targetRotationX - group.rotation.y ) * 0.25;
   }
 
