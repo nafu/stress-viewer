@@ -236,7 +236,13 @@ scene.add(edgegroup);
 scene.add(createPlane());
 
 var render = function(){
-  group.rotation.y += ( targetRotationX - group.rotation.y ) * 0.1;
+  log('mouseX - mouseXOnMouseDown = ' + (mouseX - mouseXOnMouseDown));
+  if (Math.abs(mouseX - mouseXOnMouseDown) > 0.1 &&
+      Math.abs(targetRotationX - group.rotation.y) > 0.5 &&
+      Math.abs(targetRotationX - group.rotation.y) < 2) {
+    log('targetRotationX - group.rotation.y = ' + (targetRotationX - group.rotation.y));
+    group.rotation.y += ( targetRotationX - group.rotation.y ) * 0.25;
+  }
 
   renderer.render(scene,camera);
   TWEEN.update();
@@ -420,10 +426,9 @@ function onDocumentMouseMove(event) {
     log(moveEventCount);
 
     mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-    targetRotationX = targetRotationOnMouseDownX + ( mouseX - mouseXOnMouseDown ) * 3.05;
+    targetRotationX = targetRotationOnMouseDownX + ( mouseX - mouseXOnMouseDown ) * 2.05;
 
-    log('targetRotationX');
-    log(targetRotationX);
+    log('targetRotationX = ' + targetRotationX);
   }
 }
 function onDocumentMouseDown(event) {
@@ -468,8 +473,7 @@ function touchmove(event) {
   mouseX = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
   targetRotationX = targetRotationOnMouseDownX + ( mouseX - mouseXOnMouseDown ) * 3.05;
 
-  //log('targetRotationX');
-  //log(targetRotationX);
+  log('targetRotationX = ' + targetRotationX);
 }
 function touchstart(event) {
   log('touchstart');
