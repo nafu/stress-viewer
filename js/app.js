@@ -285,11 +285,7 @@ var getIntersects = function(event) {
     vector.sub(camera.position).normalize()
   );
 
-  var array_values = new Array();
-  for (key in cubes) {
-    array_values.push(cubes[key]);
-  }
-  var intersects = raycaster.intersectObjects( array_values );
+  var intersects = raycaster.intersectObjects(group.children);
 
   return intersects;
 }
