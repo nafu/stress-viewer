@@ -21,6 +21,10 @@ var targetRotationOnMouseDownX = 0;
 var mouseX = 0;
 var mouseXOnMouseDown = 0;
 
+var MULTI_TOUCH_DETECTED = false;
+var CURRENT_MAX_TOUCH_COUNT = 0;
+var TOUCH_END_COUNT = 0;
+
 var createRenderer = function(){
   var renderer =  new THREE.WebGLRenderer(
     { antialias: true, alpha: true }
@@ -459,26 +463,28 @@ function touchmove(event) {
   event.preventDefault();
   DRAGGING = true;
   moveEventCount++;
+  log('moveEventCount = '+moveEventCount);
 
   mouseX = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
   targetRotationX = targetRotationOnMouseDownX + ( mouseX - mouseXOnMouseDown ) * 3.05;
 
-  log('targetRotationX');
-  log(targetRotationX);
+  //log('targetRotationX');
+  //log(targetRotationX);
 }
 function touchstart(event) {
   log('touchstart');
   log(event);
   event.preventDefault();
+  CURRENT_MAX_TOUCH_COUNT += event.touches.length
+  log('event.touches.length = ' + event.touches.length);
+  if (CURRENT_MAX_TOUCH_COUNT > 1 || event.touches.length > 1) {
+    MULTI_TOUCH_DETECTED = true;
+  }
   DRAGGING_TIME_MS = 0;
   if (!timerID) {
     timerID = setInterval('countup()', 100);
   }
   moveEventCount = 0;
-  if (getIntersects(event).length > 0) {
-    // TODO: Cannot detect multi touch correctly on Windows Tablet PC. Big problem.
-    controls.enabled = false;
-  }
 
   mouseXOnMouseDown = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
   targetRotationOnMouseDownX = targetRotationX;
@@ -488,18 +494,28 @@ function touchend(event) {
   event.preventDefault();
   controls.enabled = true;
 
-  if (DRAGGING && DRAGGING_TIME_MS < 10 && moveEventCount > 1) {
-    cutVoxels(event);
-    DRAGGING = null;
+  if (!MULTI_TOUCH_DETECTED) {
+    log('MULTI_TOUCH_DETECTED false');
+    if (DRAGGING && DRAGGING_TIME_MS < 10 && moveEventCount > 0) {
+      log('cutVoxels');
+      cutVoxels(event);
+      DRAGGING = null;
+    }
   }
   clearInterval(timerID);
   timerID = 0;
   DRAGGING_TIME_MS = 0;
+  TOUCH_END_COUNT++;
+  if (TOUCH_END_COUNT >= CURRENT_MAX_TOUCH_COUNT) {
+    MULTI_TOUCH_DETECTED = false;
+    CURRENT_MAX_TOUCH_COUNT = 0;
+    TOUCH_END_COUNT = 0;
+  }
 }
 
 function countup() {
  log('countup');
- log(DRAGGING_TIME_MS);
+ log('DRAGGING_TIME_MS = ' + DRAGGING_TIME_MS);
  DRAGGING_TIME_MS++;
 }
 
