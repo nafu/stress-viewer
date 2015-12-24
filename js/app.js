@@ -310,7 +310,7 @@ var cutVoxels = function(event) {
     for (key in cubes) {
       if (faceIndex == 8 || faceIndex == 9) {
         if (event.ctrlKey) {
-          if (cubes[key].position.x >= point.x) {
+          if (cubes[key].position.x >= selectedObject.position.x) {
             index = movedObjects.indexOf(cubes[key])
             if (index > -1) {
               moveObjects.push(cubes[key]);
@@ -318,7 +318,7 @@ var cutVoxels = function(event) {
             }
           }
         } else {
-          if (cubes[key].position.x >= point.x) {
+          if (cubes[key].position.x >= selectedObject.position.x) {
             if ($.inArray(cubes[key], movedObjects) == -1) {
               moveObjects.push(cubes[key]);
               movedObjects.push(cubes[key]);
@@ -327,7 +327,7 @@ var cutVoxels = function(event) {
         }
       } else if (faceIndex == 0 || faceIndex == 1) {
         if (event.ctrlKey) {
-          if (cubes[key].position.z >= point.z) {
+          if (cubes[key].position.z >= selectedObject.position.z) {
             index = movedObjects.indexOf(cubes[key])
             if (index > -1) {
               moveObjects.push(cubes[key]);
@@ -335,7 +335,7 @@ var cutVoxels = function(event) {
             }
           }
         } else {
-          if (cubes[key].position.z >= point.z) {
+          if (cubes[key].position.z >= selectedObject.position.z) {
             if ($.inArray(cubes[key], movedObjects) == -1) {
               moveObjects.push(cubes[key]);
               movedObjects.push(cubes[key]);
