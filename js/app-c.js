@@ -1,0 +1,311 @@
+var width = window.innerWidth;
+var height = window.innerHeight;
+var aspect = width/height;
+var near = 1;
+var far = 10000;
+var angle = 45;
+var tween = null;
+
+var createRenderer = function(){
+    var renderer =  new THREE.WebGLRenderer(
+        { antialias: true }
+    );
+    renderer.setSize(width,height);
+    return renderer;
+}
+
+var createCamera = function(){
+    var camera = new THREE.PerspectiveCamera(
+        angle, aspect, near, far);
+    camera.position.x = 30;
+    camera.position.y = 30;
+    camera.position.z = 30;
+    return camera;
+}
+
+var createControls = function(){
+    var controls =
+        new THREE.TrackballControls( camera );
+
+    controls.rotateSpeed = 1.0;
+    controls.zoomSpeed = 1.2;
+    controls.panSpeed = 0.8;
+    controls.noZoom = false;
+    controls.noPan = true;
+    controls.staticMoving = true;
+    controls.dynamicDampingFactor = 0.3;
+    return controls;
+}
+
+var createScene = function(){
+    var scene = new THREE.Scene();
+    return scene;
+}
+
+var createLight = function(){
+    var light =
+        new THREE.AmbientLight( 0xffffff );
+    light.position.set( 0, 500, 2000 );
+    return light;
+}
+
+var createCube = function(id, x, y, z, color) {
+    var geometry =
+        new THREE.CubeGeometry( 1, 1, 1 );
+
+    var object =
+        new THREE.Mesh( geometry,
+            new THREE.MeshLambertMaterial(
+                {
+                    color: color
+                } ) );
+
+    object.material.ambient = object.material.color;
+
+    object.position.x = x;
+    object.position.y = y;
+    object.position.z = z;
+
+    object.castShadow = true;
+    object.receiveShadow = true;
+
+    object.ref_id = id;
+
+    return object;
+}
+
+var createCubes = function(){
+    var data = $.ajax({
+        type: "GET",
+        url: "data/sample-mises.csv",
+        dataType: "text",
+        async: false
+    }).responseText;
+
+    return processData(data);
+
+    function processData(allText) {
+        var objects = {};
+
+        var allTextLines = allText.split(/\r\n|\n/);
+        var lines = [];
+
+        for (var i = 0; i < allTextLines.length; i++) {
+            var data = allTextLines[i].split(',');
+            var tarr = [];
+            for (var j = 0; j < 8; j++) {
+                tarr.push(data[j]);
+            }
+
+            // TODO: Contour color generator
+            var color;
+            max = 0.001977217;
+            min = 0.000000039293;
+            var hsv2rgb = function(h, s, v) {
+              // adapted from http://schinckel.net/2012/01/10/hsv-to-rgb-in-javascript/
+              var rgb, i, data = [];
+              if (s === 0) {
+                rgb = [v,v,v];
+              } else {
+                h = h / 60;
+                i = Math.floor(h);
+                data = [v*(1-s), v*(1-s*(h-i)), v*(1-s*(1-(h-i)))];
+                switch(i) {
+                  case 0:
+                    rgb = [v, data[2], data[0]];
+                    break;
+                  case 1:
+                    rgb = [data[1], v, data[0]];
+                    break;
+                  case 2:
+                    rgb = [data[0], v, data[2]];
+                    break;
+                  case 3:
+                    rgb = [data[0], data[1], v];
+                    break;
+                  case 4:
+                    rgb = [data[2], data[0], v];
+                    break;
+                  default:
+                    rgb = [v, data[0], data[1]];
+                    break;
+                }
+              }
+              return '#' + rgb.map(function(x){
+                return ("0" + Math.round(x*255).toString(16)).slice(-2);
+              }).join('');
+            };
+            // 240 - 0 is blue to red
+            h = 240 - ((tarr[7] - min)/(max - min)) * 240
+            if (isNaN(h)) {
+              h = 0;
+            }
+            color = hsv2rgb(h, 1, 1);
+
+            // Render partial parts
+            // if (i % 100 > 50) {
+            //   continue;
+            // }
+            var object = createCube(tarr[0], tarr[1], tarr[2], tarr[3], color);
+            objects[object.ref_id] = object;
+
+            lines.push(tarr);
+        }
+        // alert(lines);
+
+        return objects;
+    }
+};
+
+var createPlane = function(){
+    var plane =
+        new THREE.Mesh(
+            new THREE.PlaneGeometry(
+                2000,
+                2000, 8, 8 ),
+            new THREE.MeshBasicMaterial(
+                {
+                    color: 0x000000,
+                    opacity: 0.25,
+                    transparent: true,
+                    wireframe: true } ) );
+    plane.visible = false;
+    return plane;
+}
+
+var scene = createScene();
+var camera = createCamera();
+var controls = createControls();
+
+var light = createLight();
+var cubes = createCubes();
+var renderer = createRenderer();
+
+var projector = new THREE.Projector();
+var mouse = new THREE.Vector2()
+
+
+scene.add(light);
+
+for(key in cubes) {
+    scene.add(cubes[key]);
+    var edge = new THREE.EdgesHelper(cubes[key], 0xffffff);
+    edge.material.linewidth = 0.1;
+    scene.add(edge);
+}
+
+scene.add(createPlane());
+
+var render = function(){
+    renderer.render(scene,camera);
+    TWEEN.update();
+}
+var animate = function(){
+    requestAnimationFrame(animate);
+    controls.update();
+    render();
+}
+
+var movedObjects = [];
+
+animate();
+
+
+var container = $('body').append('<div>');
+$(container).append( renderer.domElement);
+
+$(container).mousedown(function(event){
+    event.preventDefault();
+
+    //FIXME - Figure out whether 2 here and 0.5
+    // in the line below are related
+    mouse.x = ( event.clientX /
+        window.innerWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY /
+        window.innerHeight ) * 2 + 1;
+
+
+    //FIXME - Figure out logic behind 0.5
+    var vector =
+        new THREE.Vector3(mouse.x,mouse.y,0.5);
+
+    projector.unprojectVector( vector, camera );
+
+    var raycaster = new THREE.Raycaster(
+        camera.position,
+        vector.sub(camera.position).normalize()
+    );
+
+
+    var array_values = new Array();
+    for (key in cubes) {
+      array_values.push(cubes[key]);
+    }
+    var intersects =
+        raycaster.intersectObjects( array_values );
+
+    if ( intersects.length > 0 ) {
+        var selectedObject = intersects[0].object;
+        //console.log('Few Objects Selected '+intersects.length);
+        //console.log(selectedObject);
+        //intersects[0].object.material.color.setHex(0x000000);
+        var moveObjects = [];
+        for (key in cubes) {
+          if (event.ctrlKey) {
+            if (cubes[key].position.x >= selectedObject.position.x) {
+              index = movedObjects.indexOf(cubes[key])
+              if (index > -1) {
+                moveObjects.push(cubes[key]);
+                movedObjects.splice(index, 1);
+              }
+            }
+          } else {
+            if (cubes[key].position.x >= selectedObject.position.x) {
+              if ($.inArray(cubes[key], movedObjects) == -1) {
+                moveObjects.push(cubes[key]);
+                movedObjects.push(cubes[key]);
+              }
+            }
+          }
+        }
+
+        for (var i = 0; i < moveObjects.length; i++) {
+          moveTween(moveObjects[i]);
+        }
+
+    } else {
+        //console.log('No Objects Selected');
+    }
+
+    function moveTween(object) {
+        var position = {
+            x:object.position.x,
+            y:object.position.y,
+            z:object.position.z
+        };
+        var target = {
+            x:object.position.x,
+            y:object.position.y,
+            z:object.position.z
+        };
+        if(event.ctrlKey){
+            target.z+=10;
+        }
+        else{
+            target.z-=10;
+        }
+
+        tween =
+            new TWEEN.
+                 Tween(position).
+                 to(target, 100);
+
+        tween.start();
+
+        tween.onUpdate(function(){
+            object.position.z = this.z;
+            object.needsUpdate = true;
+        });
+    }
+
+});
