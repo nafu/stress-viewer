@@ -310,7 +310,7 @@ var cutVoxels = function(event) {
     for (key in cubes) {
       if (faceIndex == 8 || faceIndex == 9) {
         if (event.ctrlKey) {
-          if (cubes[key].position.z >= selectedObject.position.z) {
+          if (cubes[key].position.x >= selectedObject.position.x) {
             index = movedObjects.indexOf(cubes[key])
             if (index > -1) {
               moveObjects.push(cubes[key]);
@@ -318,7 +318,7 @@ var cutVoxels = function(event) {
             }
           }
         } else {
-          if (cubes[key].position.z >= selectedObject.position.z) {
+          if (cubes[key].position.x >= selectedObject.position.x) {
             if ($.inArray(cubes[key], movedObjects) == -1) {
               moveObjects.push(cubes[key]);
               movedObjects.push(cubes[key]);
@@ -369,24 +369,13 @@ var cutVoxels = function(event) {
       z:object.position.z
     };
 
-    if (faceIndex == 8 || faceIndex == 9) {
-      if (!firstClickedX) {
-        firstClickedX = clicked.x;
-      }
-      if (event.ctrlKey) {
-        target.x+=10;
-      } else {
-        target.x-=10;
-      }
-    } else if (faceIndex == 0 || faceIndex == 1) {
-      if (!firstClickedZ) {
-        firstClickedZ = clicked.x;
-      }
-      if (event.ctrlKey) {
-        target.z+=10;
-      } else {
-        target.z-=10;
-      }
+    if (!firstClickedZ) {
+      firstClickedZ = clicked.x;
+    }
+    if (event.ctrlKey) {
+      target.z+=10;
+    } else {
+      target.z-=10;
     }
     tween = new TWEEN.Tween(position).to(target, 100);
     tween.start();
