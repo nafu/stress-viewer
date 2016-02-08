@@ -6,8 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": "",
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nafu/stress-viewer.git"
+  },
+  "author": "Fumiya Nakamura",
   "license": "BSD",
   "devDependencies": {
     "grunt": "~0.4.2",
@@ -19,5 +22,9 @@
     "connect-livereload": "~0.3.2",
     "grunt-contrib-compass": "~0.7.1",
     "jsdoc": "^3.4.0"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/nafu/stress-viewer/issues"
+  },
+  "homepage": "https://github.com/nafu/stress-viewer#readme"
 }
