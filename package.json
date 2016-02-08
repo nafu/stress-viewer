@@ -11,7 +11,7 @@
     "url": "git+https://github.com/nafu/stress-viewer.git"
   },
   "author": "Fumiya Nakamura",
-  "license": "BSD",
+  "license": "ISC",
   "devDependencies": {
     "grunt": "~0.4.2",
     "grunt-exec": "~0.4.3",
