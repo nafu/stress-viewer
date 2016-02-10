@@ -567,49 +567,71 @@ Viewer.prototype.animate = function(){
   this.render();
 }
 
-Viewer.prototype.onDocumentMouseMove = function(event) {
-  log('MouseMove');
-  event.preventDefault();
-  this.DRAGGING = true;
-
-  if (this.MOUSE_DOWN) {
-    this.moveEventCount++;
-    log('moveEventCount');
-    log(this.moveEventCount);
-
-    this.mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-    this.targetRotationX = this.targetRotationOnMouseDownX + (this.mouseX - this.mouseXOnMouseDown) * 3.05;
-
-    // log('targetRotationX = ' + targetRotationX);
-  }
+Viewer.prototype.constructEventListner = function(_self) {
+  this.renderer.domElement.addEventListener('mousemove', this.onDocumentMouseMove(_self), false);
+  this.renderer.domElement.addEventListener('mousedown', this.onDocumentMouseDown(_self), false);
+  this.renderer.domElement.addEventListener('mouseup', this.onDocumentMouseUp(_self), false);
+  this.renderer.domElement.addEventListener('mouseout', this.onDocumentMouseOut(_self), false);
 }
 
-Viewer.prototype.onDocumentMouseDown = function(event) {
-  log('MouseDown');
-  event.preventDefault();
-  this.MOUSE_DOWN = true;
-  this.moveEventCount = 0;
-  if (this.getIntersects(event).length > 0) {
-    this.controls.enabled = false;
-  }
+Viewer.prototype.onDocumentMouseMove = function(_self) {
+  return function(event) {
+    log('MouseMove');
+    event.preventDefault();
+    _self.DRAGGING = true;
 
-  this.mouseXOnMouseDown = (event.clientX / window.innerWidth) * 2 - 1;
-  this.targetRotationOnMouseDownX = this.targetRotationX;
-}
+    if (_self.MOUSE_DOWN) {
+      _self.moveEventCount++;
+      log('moveEventCount');
+      log(_self.moveEventCount);
 
-Viewer.prototype.onDocumentMouseUp = function(event) {
-  log('MouseUp');
-  event.preventDefault();
-  this.controls.enabled = true;
+      _self.mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+      _self.targetRotationX = _self.targetRotationOnMouseDownX + (_self.mouseX - _self.mouseXOnMouseDown) * 3.05;
 
-  if (this.type == 'b') {
-    if (this.DRAGGING && this.moveEventCount > 5) {
-      this.cutVoxels(event);
+      // log('targetRotationX = ' + targetRotationX);
     }
-  } else if (this.type == 'c') {
-    this.cutVoxels(event);
   }
-  this.DRAGGING = null;
-  this.MOUSE_DOWN = false;
-  this.moveEventCount = 0;
+}
+
+Viewer.prototype.onDocumentMouseDown = function(_self) {
+  return function(event) {
+    log('MouseDown');
+    event.preventDefault();
+    _self.MOUSE_DOWN = true;
+    _self.moveEventCount = 0;
+    if (_self.getIntersects(event).length > 0) {
+      _self.controls.enabled = false;
+    }
+
+    _self.mouseXOnMouseDown = (event.clientX / window.innerWidth) * 2 - 1;
+    _self.targetRotationOnMouseDownX = _self.targetRotationX;
+  }
+}
+
+Viewer.prototype.onDocumentMouseUp = function(_self) {
+  return function(event) {
+    log('MouseUp');
+    event.preventDefault();
+    _self.controls.enabled = true;
+
+    if (_self.type == 'b') {
+      if (_self.DRAGGING && _self.moveEventCount > 5) {
+        _self.cutVoxels(event);
+      }
+    } else if (_self.type == 'c') {
+      _self.cutVoxels(event);
+    }
+    _self.DRAGGING = null;
+    _self.MOUSE_DOWN = false;
+    _self.moveEventCount = 0;
+  }
+}
+
+Viewer.prototype.onDocumentMouseOut = function(_self) {
+  return function(event) {
+    log('MouseOut');
+    event.preventDefault();
+    _self.controls.enabled = true;
+    _self.MOUSE_DOWN = false;
+  }
 }
