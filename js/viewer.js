@@ -65,30 +65,11 @@ function Viewer(config) {
 
   // Custom Event
   this.constructEventListner(this);
-  this.renderer.domElement.addEventListener('touchstart', touchstart, false );
   this.renderer.domElement.addEventListener('touchend', touchend, false );
 
   // Mouse
 
   // Touch
-  function touchstart(event) {
-    log('touchstart');
-    log(event);
-    event.preventDefault();
-    this.CURRENT_MAX_TOUCH_COUNT += event.touches.length
-    log('event.touches.length = ' + event.touches.length);
-    if (this.CURRENT_MAX_TOUCH_COUNT > 1 || event.touches.length > 1) {
-      this.MULTI_TOUCH_DETECTED = true;
-    }
-    this.DRAGGING_TIME_MS = 0;
-    if (!this.timerID) {
-      this.timerID = setInterval('countup()', 100);
-    }
-    this.moveEventCount = 0;
-
-    this.mouseXOnMouseDown = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
-    this.targetRotationOnMouseDownX = this.targetRotationX;
-  }
   function touchend(event) {
     log('touchend');
     event.preventDefault();
@@ -551,6 +532,7 @@ Viewer.prototype.constructEventListner = function(_self) {
   this.renderer.domElement.addEventListener('mouseout', this.onDocumentMouseOut(_self), false);
   // Touch
   this.renderer.domElement.addEventListener('touchmove', this.touchmove(_self), false );
+  this.renderer.domElement.addEventListener('touchstart', this.touchstart(_self), false );
 }
 
 Viewer.prototype.onDocumentMouseMove = function(_self) {
@@ -627,5 +609,26 @@ Viewer.prototype.touchmove = function(_self) {
     this.targetRotationX = this.targetRotationOnMouseDownX + (this.mouseX - this.mouseXOnMouseDown) * 2.05;
 
     // log('targetRotationX = ' + targetRotationX);
+  }
+}
+
+Viewer.prototype.touchstart = function(_self) {
+  return function(event) {
+    log('touchstart');
+    log(event);
+    event.preventDefault();
+    this.CURRENT_MAX_TOUCH_COUNT += event.touches.length
+    log('event.touches.length = ' + event.touches.length);
+    if (this.CURRENT_MAX_TOUCH_COUNT > 1 || event.touches.length > 1) {
+      this.MULTI_TOUCH_DETECTED = true;
+    }
+    this.DRAGGING_TIME_MS = 0;
+    if (!this.timerID) {
+      this.timerID = setInterval('countup()', 100);
+    }
+    this.moveEventCount = 0;
+
+    this.mouseXOnMouseDown = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
+    this.targetRotationOnMouseDownX = this.targetRotationX;
   }
 }
