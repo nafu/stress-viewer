@@ -568,12 +568,12 @@ Viewer.prototype.touchmove = function(_self) {
   return function(event) {
     log('touchmove');
     event.preventDefault();
-    this.DRAGGING = true;
-    this.moveEventCount++;
-    log('moveEventCount = ' + this.moveEventCount);
+    _self.DRAGGING = true;
+    _self.moveEventCount++;
+    log('moveEventCount = ' + _self.moveEventCount);
 
-    this.mouseX = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
-    this.targetRotationX = this.targetRotationOnMouseDownX + (this.mouseX - this.mouseXOnMouseDown) * 2.05;
+    _self.mouseX = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
+    _self.targetRotationX = _self.targetRotationOnMouseDownX + (_self.mouseX - _self.mouseXOnMouseDown) * 2.05;
 
     // log('targetRotationX = ' + targetRotationX);
   }
@@ -584,19 +584,19 @@ Viewer.prototype.touchstart = function(_self) {
     log('touchstart');
     log(event);
     event.preventDefault();
-    this.CURRENT_MAX_TOUCH_COUNT += event.touches.length
+    _self.CURRENT_MAX_TOUCH_COUNT += event.touches.length
     log('event.touches.length = ' + event.touches.length);
-    if (this.CURRENT_MAX_TOUCH_COUNT > 1 || event.touches.length > 1) {
-      this.MULTI_TOUCH_DETECTED = true;
+    if (_self.CURRENT_MAX_TOUCH_COUNT > 1 || event.touches.length > 1) {
+      _self.MULTI_TOUCH_DETECTED = true;
     }
-    this.DRAGGING_TIME_MS = 0;
-    if (!this.timerID) {
-      this.timerID = setInterval('countup()', 100);
+    _self.DRAGGING_TIME_MS = 0;
+    if (!_self.timerID) {
+      _self.timerID = setInterval('countup()', 100);
     }
-    this.moveEventCount = 0;
+    _self.moveEventCount = 0;
 
-    this.mouseXOnMouseDown = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
-    this.targetRotationOnMouseDownX = this.targetRotationX;
+    _self.mouseXOnMouseDown = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
+    _self.targetRotationOnMouseDownX = _self.targetRotationX;
   }
 }
 
@@ -604,30 +604,30 @@ Viewer.prototype.touchend = function(_self) {
   return function(event) {
     log('touchend');
     event.preventDefault();
-    this.controls.enabled = true;
+    _self.controls.enabled = true;
 
-    if (!this.MULTI_TOUCH_DETECTED) {
+    if (!_self.MULTI_TOUCH_DETECTED) {
       log('MULTI_TOUCH_DETECTED false');
-      if (this.type == 'b') {
-        if (this.DRAGGING && this.DRAGGING_TIME_MS < 10 && this.moveEventCount > 0) {
+      if (_self.type == 'b') {
+        if (_self.DRAGGING && _self.DRAGGING_TIME_MS < 10 && _self.moveEventCount > 0) {
           log('cutVoxels');
-          this.cutVoxels(event);
-          this.DRAGGING = null;
+          _self.cutVoxels(event);
+          _self.DRAGGING = null;
         }
-      } else if (this.type == 'c') {
+      } else if (_self.type == 'c') {
         log('cutVoxels');
-        this.cutVoxels(event);
-        this.DRAGGING = null;
+        _self.cutVoxels(event);
+        _self.DRAGGING = null;
       }
     }
     clearInterval(timerID);
-    this.timerID = 0;
-    this.DRAGGING_TIME_MS = 0;
-    this.TOUCH_END_COUNT++;
-    if (this.TOUCH_END_COUNT >= this.CURRENT_MAX_TOUCH_COUNT) {
-      this.MULTI_TOUCH_DETECTED = false;
-      this.CURRENT_MAX_TOUCH_COUNT = 0;
-      this.TOUCH_END_COUNT = 0;
+    _self.timerID = 0;
+    _self.DRAGGING_TIME_MS = 0;
+    _self.TOUCH_END_COUNT++;
+    if (_self.TOUCH_END_COUNT >= _self.CURRENT_MAX_TOUCH_COUNT) {
+      _self.MULTI_TOUCH_DETECTED = false;
+      _self.CURRENT_MAX_TOUCH_COUNT = 0;
+      _self.TOUCH_END_COUNT = 0;
     }
   }
 }
