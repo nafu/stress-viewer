@@ -65,40 +65,6 @@ function Viewer(config) {
 
   // Custom Event
   this.constructEventListner(this);
-  this.renderer.domElement.addEventListener('touchend', touchend, false );
-
-  // Mouse
-
-  // Touch
-  function touchend(event) {
-    log('touchend');
-    event.preventDefault();
-    this.controls.enabled = true;
-
-    if (!this.MULTI_TOUCH_DETECTED) {
-      log('MULTI_TOUCH_DETECTED false');
-      if (this.type == 'b') {
-        if (this.DRAGGING && this.DRAGGING_TIME_MS < 10 && this.moveEventCount > 0) {
-          log('cutVoxels');
-          this.cutVoxels(event);
-          this.DRAGGING = null;
-        }
-      } else if (this.type == 'c') {
-        log('cutVoxels');
-        this.cutVoxels(event);
-        this.DRAGGING = null;
-      }
-    }
-    clearInterval(timerID);
-    this.timerID = 0;
-    this.DRAGGING_TIME_MS = 0;
-    this.TOUCH_END_COUNT++;
-    if (this.TOUCH_END_COUNT >= this.CURRENT_MAX_TOUCH_COUNT) {
-      this.MULTI_TOUCH_DETECTED = false;
-      this.CURRENT_MAX_TOUCH_COUNT = 0;
-      this.TOUCH_END_COUNT = 0;
-    }
-  }
 
   function countup() {
    log('countup');
@@ -533,6 +499,7 @@ Viewer.prototype.constructEventListner = function(_self) {
   // Touch
   this.renderer.domElement.addEventListener('touchmove', this.touchmove(_self), false );
   this.renderer.domElement.addEventListener('touchstart', this.touchstart(_self), false );
+  this.renderer.domElement.addEventListener('touchend', this.touchend(_self), false );
 }
 
 Viewer.prototype.onDocumentMouseMove = function(_self) {
@@ -630,5 +597,37 @@ Viewer.prototype.touchstart = function(_self) {
 
     this.mouseXOnMouseDown = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
     this.targetRotationOnMouseDownX = this.targetRotationX;
+  }
+}
+
+Viewer.prototype.touchend = function(_self) {
+  return function(event) {
+    log('touchend');
+    event.preventDefault();
+    this.controls.enabled = true;
+
+    if (!this.MULTI_TOUCH_DETECTED) {
+      log('MULTI_TOUCH_DETECTED false');
+      if (this.type == 'b') {
+        if (this.DRAGGING && this.DRAGGING_TIME_MS < 10 && this.moveEventCount > 0) {
+          log('cutVoxels');
+          this.cutVoxels(event);
+          this.DRAGGING = null;
+        }
+      } else if (this.type == 'c') {
+        log('cutVoxels');
+        this.cutVoxels(event);
+        this.DRAGGING = null;
+      }
+    }
+    clearInterval(timerID);
+    this.timerID = 0;
+    this.DRAGGING_TIME_MS = 0;
+    this.TOUCH_END_COUNT++;
+    if (this.TOUCH_END_COUNT >= this.CURRENT_MAX_TOUCH_COUNT) {
+      this.MULTI_TOUCH_DETECTED = false;
+      this.CURRENT_MAX_TOUCH_COUNT = 0;
+      this.TOUCH_END_COUNT = 0;
+    }
   }
 }
