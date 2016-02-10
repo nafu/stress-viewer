@@ -30,14 +30,6 @@ function Viewer(config) {
   var CURRENT_MAX_TOUCH_COUNT = 0;
   var TOUCH_END_COUNT = 0;
 
-  var createRenderer = function(){
-    var renderer =  new THREE.WebGLRenderer(
-      { antialias: true, alpha: true }
-    );
-    renderer.setSize(width,height);
-    return renderer;
-  }
-
   var createCamera = function(){
     var camera = new THREE.PerspectiveCamera(angle, aspect, near, far);
     camera.position.x = 30;
@@ -222,7 +214,7 @@ function Viewer(config) {
 
   var light = createLight();
   var cubes = createCubes();
-  var renderer = createRenderer();
+  var renderer = this.createRenderer();
 
   var projector = new THREE.Projector();
   var mouse = new THREE.Vector2()
@@ -603,4 +595,12 @@ function Viewer(config) {
   // Suppress mobile scroll
   document.ontouchmove = function(e) {e.preventDefault()};
   $(container).ontouchmove = function(e) {e.stopPropagation()};
+}
+
+Viewer.prototype.createRenderer = function(){
+  var renderer =  new THREE.WebGLRenderer(
+    { antialias: true, alpha: true }
+  );
+  renderer.setSize(width,height);
+  return renderer;
 }
