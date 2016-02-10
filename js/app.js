@@ -4,31 +4,31 @@ function Viewer(config) {
   log('this.type = ' + this.type);
 
   // NOTE: Set debugMode to true in debug-utility.js for debugging
-  var width = window.innerWidth;
-  var height = window.innerHeight;
-  var aspect = width/height;
-  var near = 1;
-  var far = 10000;
-  var angle = 45;
-  var tween = null;
-  var MOUSE_DOWN = false;
-  var DRAGGING = null;
-  var DRAGGING_TIME_MS = 0;
-  var timerID = 0;
+  this.width = window.innerWidth;
+  this.height = window.innerHeight;
+  this.aspect = width/height;
+  this.near = 1;
+  this.far = 10000;
+  this.angle = 45;
+  this.tween = null;
+  this.MOUSE_DOWN = false;
+  this.DRAGGING = null;
+  this.DRAGGING_TIME_MS = 0;
+  this.timerID = 0;
 
-  var moveEventCount = 0;
+  this.moveEventCount = 0;
 
-  var firstClickedX = null;
-  var firstClickedZ = null;
+  this.firstClickedX = null;
+  this.firstClickedZ = null;
 
-  var targetRotationX = 0;
-  var targetRotationOnMouseDownX = 0;
-  var mouseX = 0;
-  var mouseXOnMouseDown = 0;
+  this.targetRotationX = 0;
+  this.targetRotationOnMouseDownX = 0;
+  this.mouseX = 0;
+  this.mouseXOnMouseDown = 0;
 
-  var MULTI_TOUCH_DETECTED = false;
-  var CURRENT_MAX_TOUCH_COUNT = 0;
-  var TOUCH_END_COUNT = 0;
+  this.MULTI_TOUCH_DETECTED = false;
+  this.CURRENT_MAX_TOUCH_COUNT = 0;
+  this.TOUCH_END_COUNT = 0;
 
   var createCamera = function(){
     var camera = new THREE.PerspectiveCamera(angle, aspect, near, far);
