@@ -30,11 +30,6 @@ function Viewer(config) {
   this.CURRENT_MAX_TOUCH_COUNT = 0;
   this.TOUCH_END_COUNT = 0;
 
-  var createScene = function(){
-    var scene = new THREE.Scene();
-    return scene;
-  }
-
   var createLight = function(){
     var light = new THREE.AmbientLight(0xffffff);
     light.position.set(0, 500, 2000);
@@ -184,7 +179,7 @@ function Viewer(config) {
   }
   loadSound();
 
-  var scene = createScene();
+  var scene = this.createScene();
   var group = new THREE.Object3D();
   var edgegroup = new THREE.Object3D();
   var camera = this.createCamera();
@@ -602,4 +597,9 @@ Viewer.prototype.createControls = function(camera){
   controls.staticMoving = true;
   controls.dynamicDampingFactor = 0.3;
   return controls;
+}
+
+Viewer.prototype.createScene = function(){
+  var scene = new THREE.Scene();
+  return scene;
 }
