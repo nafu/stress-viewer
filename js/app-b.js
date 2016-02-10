@@ -1,3 +1,3 @@
 (function() {
-  var viewer-b = new Viewer();
+  var viewerB = new Viewer();
 }());
