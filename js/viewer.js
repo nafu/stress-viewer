@@ -65,25 +65,12 @@ function Viewer(config) {
 
   // Custom Event
   this.constructEventListner(this);
-  this.renderer.domElement.addEventListener('touchmove', touchmove, false );
   this.renderer.domElement.addEventListener('touchstart', touchstart, false );
   this.renderer.domElement.addEventListener('touchend', touchend, false );
 
   // Mouse
 
   // Touch
-  function touchmove(event) {
-    log('touchmove');
-    event.preventDefault();
-    this.DRAGGING = true;
-    this.moveEventCount++;
-    log('moveEventCount = ' + this.moveEventCount);
-
-    this.mouseX = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
-    this.targetRotationX = this.targetRotationOnMouseDownX + (this.mouseX - this.mouseXOnMouseDown) * 2.05;
-
-    // log('targetRotationX = ' + targetRotationX);
-  }
   function touchstart(event) {
     log('touchstart');
     log(event);
@@ -562,6 +549,8 @@ Viewer.prototype.constructEventListner = function(_self) {
   this.renderer.domElement.addEventListener('mousedown', this.onDocumentMouseDown(_self), false);
   this.renderer.domElement.addEventListener('mouseup', this.onDocumentMouseUp(_self), false);
   this.renderer.domElement.addEventListener('mouseout', this.onDocumentMouseOut(_self), false);
+  // Touch
+  this.renderer.domElement.addEventListener('touchmove', this.touchmove(_self), false );
 }
 
 Viewer.prototype.onDocumentMouseMove = function(_self) {
@@ -623,5 +612,20 @@ Viewer.prototype.onDocumentMouseOut = function(_self) {
     event.preventDefault();
     _self.controls.enabled = true;
     _self.MOUSE_DOWN = false;
+  }
+}
+
+Viewer.prototype.touchmove = function(_self) {
+  return function(event) {
+    log('touchmove');
+    event.preventDefault();
+    this.DRAGGING = true;
+    this.moveEventCount++;
+    log('moveEventCount = ' + this.moveEventCount);
+
+    this.mouseX = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
+    this.targetRotationX = this.targetRotationOnMouseDownX + (this.mouseX - this.mouseXOnMouseDown) * 2.05;
+
+    // log('targetRotationX = ' + targetRotationX);
   }
 }
