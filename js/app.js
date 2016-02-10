@@ -30,22 +30,6 @@ function Viewer(config) {
   this.CURRENT_MAX_TOUCH_COUNT = 0;
   this.TOUCH_END_COUNT = 0;
 
-  var createPlane = function(){
-    var plane =
-      new THREE.Mesh(
-        new THREE.PlaneGeometry(
-          2000,
-          2000, 8, 8 ),
-        new THREE.MeshBasicMaterial(
-          {
-            color: 0x000000,
-            opacity: 0.25,
-            transparent: true,
-            wireframe: true } ) );
-    plane.visible = false;
-    return plane;
-  }
-
   // Sound
   var soundID = 'Swoosh';
   function loadSound() {
@@ -80,7 +64,7 @@ function Viewer(config) {
 
   scene.add(group);
   scene.add(edgegroup);
-  scene.add(createPlane());
+  scene.add(this.createPlane());
 
   var render = function(){
     log('mouseX - mouseXOnMouseDown = ' + (mouseX - mouseXOnMouseDown));
@@ -603,3 +587,19 @@ Viewer.prototype.createCubes = function(){
     return objects;
   }
 };
+
+Viewer.prototype.createPlane = function(){
+  var plane =
+    new THREE.Mesh(
+      new THREE.PlaneGeometry(
+        2000,
+        2000, 8, 8 ),
+      new THREE.MeshBasicMaterial(
+        {
+          color: 0x000000,
+          opacity: 0.25,
+          transparent: true,
+          wireframe: true } ) );
+  plane.visible = false;
+  return plane;
+}
