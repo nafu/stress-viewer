@@ -44,7 +44,6 @@ function Viewer(config) {
   this.cubes = this.createCubes();
   this.renderer = this.createRenderer();
 
-  var projector = new THREE.Projector();
   this.mouse = new THREE.Vector2()
 
   this.scene.add(light);
