@@ -30,123 +30,6 @@ function Viewer(config) {
   this.CURRENT_MAX_TOUCH_COUNT = 0;
   this.TOUCH_END_COUNT = 0;
 
-  var createCube = function(id, x, y, z, color) {
-    // TODO: Refactor
-    // For bone-mises
-    // var geometry = new THREE.CubeGeometry(0.14, 0.14, 0.14);
-    var geometry = new THREE.CubeGeometry(1, 1, 1);
-    var material = new THREE.MeshLambertMaterial(
-      { color: color }
-    );
-    var object = new THREE.Mesh(geometry, material);
-
-    object.material.ambient = object.material.color;
-
-    object.position.x = x;
-    object.position.y = y;
-    object.position.z = z;
-
-    object.castShadow = true;
-    object.receiveShadow = true;
-
-    object.ref_id = id;
-
-    return object;
-  }
-
-  var createCubes = function(){
-    var data = $.ajax({
-        type: "GET",
-        url: "data/sample-mises.csv",
-        dataType: "text",
-        async: false
-    }).responseText;
-
-    return processData(data);
-
-    function processData(allText) {
-      var objects = {};
-
-      var allTextLines = allText.split(/\r\n|\n/);
-      var lines = [];
-
-      for (var i = 0; i < allTextLines.length; i++) {
-        // TODO: Refactor
-        // For bone-mises
-        // if (i % 100 !== 0) {
-        //   continue;
-        // }
-        var data = allTextLines[i].split(',');
-        var tarr = [];
-        for (var j = 0; j < 8; j++) {
-          tarr.push(data[j]);
-        }
-
-        // TODO: Contour color generator
-        var color;
-        max = 0.001977217;
-        min = 0.000000039293;
-        // TODO: Refactor
-        // For bone-mises
-        // max = 4.61;
-        // min = 0;
-        var hsv2rgb = function(h, s, v) {
-          // adapted from http://schinckel.net/2012/01/10/hsv-to-rgb-in-javascript/
-          var rgb, i, data = [];
-          if (s === 0) {
-            rgb = [v,v,v];
-          } else {
-            h = h / 60;
-            i = Math.floor(h);
-            data = [v*(1-s), v*(1-s*(h-i)), v*(1-s*(1-(h-i)))];
-            switch(i) {
-              case 0:
-                rgb = [v, data[2], data[0]];
-                break;
-              case 1:
-                rgb = [data[1], v, data[0]];
-                break;
-              case 2:
-                rgb = [data[0], v, data[2]];
-                break;
-              case 3:
-                rgb = [data[0], data[1], v];
-                break;
-              case 4:
-                rgb = [data[2], data[0], v];
-                break;
-              default:
-                rgb = [v, data[0], data[1]];
-                break;
-            }
-          }
-          return '#' + rgb.map(function(x){
-            return ("0" + Math.round(x*255).toString(16)).slice(-2);
-          }).join('');
-        };
-        // 240 - 0 is blue to red
-        h = 240 - ((tarr[7] - min)/(max - min)) * 240
-        if (isNaN(h)) {
-          h = 0;
-        }
-        color = hsv2rgb(h, 1, 1);
-
-        // Render partial parts
-        // if (i % 100 > 50) {
-        //   continue;
-        // }
-        var object = createCube(tarr[0], tarr[1] - 5, tarr[2], tarr[3] - 5, color);
-        if (object.ref_id == "") continue;
-        objects[object.ref_id] = object;
-
-        lines.push(tarr);
-      }
-      // alert(lines);
-
-      return objects;
-    }
-  };
-
   var createPlane = function(){
     var plane =
       new THREE.Mesh(
@@ -180,7 +63,7 @@ function Viewer(config) {
   var controls = this.createControls(camera);
 
   var light = this.createLight();
-  var cubes = createCubes();
+  var cubes = this.createCubes();
   var renderer = this.createRenderer();
 
   var projector = new THREE.Projector();
@@ -603,3 +486,120 @@ Viewer.prototype.createLight = function(){
   light.position.set(0, 500, 2000);
   return light;
 }
+
+Viewer.prototype.createCubes = function(){
+  var data = $.ajax({
+      type: "GET",
+      url: "data/sample-mises.csv",
+      dataType: "text",
+      async: false
+  }).responseText;
+
+  return processData(data);
+
+  var createCube = function(id, x, y, z, color) {
+    // TODO: Refactor
+    // For bone-mises
+    // var geometry = new THREE.CubeGeometry(0.14, 0.14, 0.14);
+    var geometry = new THREE.CubeGeometry(1, 1, 1);
+    var material = new THREE.MeshLambertMaterial(
+      { color: color }
+    );
+    var object = new THREE.Mesh(geometry, material);
+
+    object.material.ambient = object.material.color;
+
+    object.position.x = x;
+    object.position.y = y;
+    object.position.z = z;
+
+    object.castShadow = true;
+    object.receiveShadow = true;
+
+    object.ref_id = id;
+
+    return object;
+  }
+
+  function processData(allText) {
+    var objects = {};
+
+    var allTextLines = allText.split(/\r\n|\n/);
+    var lines = [];
+
+    for (var i = 0; i < allTextLines.length; i++) {
+      // TODO: Refactor
+      // For bone-mises
+      // if (i % 100 !== 0) {
+      //   continue;
+      // }
+      var data = allTextLines[i].split(',');
+      var tarr = [];
+      for (var j = 0; j < 8; j++) {
+        tarr.push(data[j]);
+      }
+
+      // TODO: Contour color generator
+      var color;
+      max = 0.001977217;
+      min = 0.000000039293;
+      // TODO: Refactor
+      // For bone-mises
+      // max = 4.61;
+      // min = 0;
+      var hsv2rgb = function(h, s, v) {
+        // adapted from http://schinckel.net/2012/01/10/hsv-to-rgb-in-javascript/
+        var rgb, i, data = [];
+        if (s === 0) {
+          rgb = [v,v,v];
+        } else {
+          h = h / 60;
+          i = Math.floor(h);
+          data = [v*(1-s), v*(1-s*(h-i)), v*(1-s*(1-(h-i)))];
+          switch(i) {
+            case 0:
+              rgb = [v, data[2], data[0]];
+              break;
+            case 1:
+              rgb = [data[1], v, data[0]];
+              break;
+            case 2:
+              rgb = [data[0], v, data[2]];
+              break;
+            case 3:
+              rgb = [data[0], data[1], v];
+              break;
+            case 4:
+              rgb = [data[2], data[0], v];
+              break;
+            default:
+              rgb = [v, data[0], data[1]];
+              break;
+          }
+        }
+        return '#' + rgb.map(function(x){
+          return ("0" + Math.round(x*255).toString(16)).slice(-2);
+        }).join('');
+      };
+      // 240 - 0 is blue to red
+      h = 240 - ((tarr[7] - min)/(max - min)) * 240
+      if (isNaN(h)) {
+        h = 0;
+      }
+      color = hsv2rgb(h, 1, 1);
+
+      // Render partial parts
+      // if (i % 100 > 50) {
+      //   continue;
+      // }
+      var object = createCube(tarr[0], tarr[1] - 5, tarr[2], tarr[3] - 5, color);
+      if (object.ref_id == "") continue;
+      objects[object.ref_id] = object;
+
+      lines.push(tarr);
+    }
+    // alert(lines);
+
+    return objects;
+  }
+};
