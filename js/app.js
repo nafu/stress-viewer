@@ -501,7 +501,7 @@ Viewer.prototype.moveTween = function(object, clicked, faceIndex) {
       }
     } else if (faceIndex == 0 || faceIndex == 1) {
       if (!this.firstClickedZ) {
-        firstClickedZ = clicked.x;
+        this.firstClickedZ = clicked.x;
       }
       if (event.ctrlKey) {
         target.z+=10;
