@@ -34,11 +34,11 @@ function Viewer(config) {
   this.soundID = 'Swoosh';
   this.loadSound();
 
-  var scene = this.createScene();
+  this.scene = this.createScene();
   this.group = new THREE.Object3D();
   var edgegroup = new THREE.Object3D();
-  var camera = this.createCamera();
-  var controls = this.createControls(camera);
+  this.camera = this.createCamera();
+  this.controls = this.createControls();
 
   var light = this.createLight();
   this.cubes = this.createCubes();
@@ -47,28 +47,22 @@ function Viewer(config) {
   var projector = new THREE.Projector();
   var mouse = new THREE.Vector2()
 
-  scene.add(light);
+  this.scene.add(light);
 
   for(key in this.cubes) {
-    group.add(this.cubes[key]);
+    this.group.add(this.cubes[key]);
     var edge = new THREE.EdgesHelper(this.cubes[key], 0xffffff);
     edge.material.linewidth = 0.1;
     edgegroup.add(edge);
   }
 
-  scene.add(group);
-  scene.add(edgegroup);
-  scene.add(this.createPlane());
-
-  var animate = function(){
-    requestAnimationFrame(animate);
-    controls.update();
-    this.render();
-  }
+  this.scene.add(this.group);
+  this.scene.add(edgegroup);
+  this.scene.add(this.createPlane());
 
   var movedObjects = [];
 
-  animate();
+  this.animate();
 
   // Custom Event
   this.renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);
@@ -215,24 +209,24 @@ Viewer.prototype.createRenderer = function(){
 }
 
 Viewer.prototype.createCamera = function(){
-  var camera = new THREE.PerspectiveCamera(this.angle, this.aspect, this.near, this.far);
-  camera.position.x = 30;
-  camera.position.y = 30;
-  camera.position.z = 30;
-  return camera;
+  var myCamera = new THREE.PerspectiveCamera(this.angle, this.aspect, this.near, this.far);
+  myCamera.position.x = 30;
+  myCamera.position.y = 30;
+  myCamera.position.z = 30;
+  return myCamera;
 }
 
-Viewer.prototype.createControls = function(camera){
-  var controls = new THREE.TrackballControls(camera);
-  controls.rotateSpeed = 1.0;
-  controls.zoomSpeed = 1.2;
-  controls.panSpeed = 0.8;
-  controls.noRotate = true;
-  controls.noZoom = false;
-  controls.noPan = true;
-  controls.staticMoving = true;
-  controls.dynamicDampingFactor = 0.3;
-  return controls;
+Viewer.prototype.createControls = function(){
+  var myControls = new THREE.TrackballControls(this.camera);
+  myControls.rotateSpeed = 1.0;
+  myControls.zoomSpeed = 1.2;
+  myControls.panSpeed = 0.8;
+  myControls.noRotate = true;
+  myControls.noZoom = false;
+  myControls.noPan = true;
+  myControls.staticMoving = true;
+  myControls.dynamicDampingFactor = 0.3;
+  return myControls;
 }
 
 Viewer.prototype.createScene = function(){
@@ -380,8 +374,8 @@ Viewer.prototype.createPlane = function(){
 }
 
 Viewer.prototype.render = function(){
-  log('mouseX - mouseXOnMouseDown = ' + (this.mouseX - this.mouseXOnMouseDown));
-  log('targetRotationX - group.rotation.y = ' + (this.targetRotationX - this.group.rotation.y));
+  //log('mouseX - mouseXOnMouseDown = ' + (this.mouseX - this.mouseXOnMouseDown));
+  //log('targetRotationX - group.rotation.y = ' + (this.targetRotationX - this.group.rotation.y));
   if (Math.abs(this.mouseX - this.mouseXOnMouseDown) > 0.1 &&
       Math.abs(this.targetRotationX - this.group.rotation.y) > 0.5 &&
       Math.abs(this.targetRotationX - this.group.rotation.y) < 5) {
@@ -605,4 +599,11 @@ Viewer.prototype.loadSound = function() {
 
 Viewer.prototype.playSound = function() {
   createjs.Sound.play(this.soundID);
+}
+
+Viewer.prototype.animate = function(){
+  requestAnimationFrame(this.animate.bind(this));
+  log('animate');
+  this.controls.update();
+  this.render();
 }
