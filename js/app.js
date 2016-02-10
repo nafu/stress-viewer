@@ -83,15 +83,15 @@ function Viewer(config) {
   function onDocumentMouseMove(event) {
     log('MouseMove');
     event.preventDefault();
-    DRAGGING = true;
+    this.DRAGGING = true;
 
-    if (MOUSE_DOWN) {
-      moveEventCount++;
+    if (this.MOUSE_DOWN) {
+      this.moveEventCount++;
       log('moveEventCount');
-      log(moveEventCount);
+      log(this.moveEventCount);
 
-      mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-      targetRotationX = targetRotationOnMouseDownX + ( mouseX - mouseXOnMouseDown ) * 3.05;
+      this.mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+      this.targetRotationX = this.targetRotationOnMouseDownX + (this.mouseX - this.mouseXOnMouseDown) * 3.05;
 
       // log('targetRotationX = ' + targetRotationX);
     }
@@ -99,36 +99,36 @@ function Viewer(config) {
   function onDocumentMouseDown(event) {
     log('MouseDown');
     event.preventDefault();
-    MOUSE_DOWN = true;
-    moveEventCount = 0;
-    if (getIntersects(event).length > 0) {
-      controls.enabled = false;
+    this.MOUSE_DOWN = true;
+    this.moveEventCount = 0;
+    if (this.getIntersects(event).length > 0) {
+      this.controls.enabled = false;
     }
 
-    mouseXOnMouseDown = (event.clientX / window.innerWidth) * 2 - 1;
-    targetRotationOnMouseDownX = targetRotationX;
+    this.mouseXOnMouseDown = (event.clientX / window.innerWidth) * 2 - 1;
+    this.targetRotationOnMouseDownX = this.targetRotationX;
   }
   function onDocumentMouseUp(event) {
     log('MouseUp');
     event.preventDefault();
-    controls.enabled = true;
+    this.controls.enabled = true;
 
     if (this.type == 'b') {
-      if (DRAGGING && moveEventCount > 5) {
-        cutVoxels(event);
+      if (this.DRAGGING && this.moveEventCount > 5) {
+        this.cutVoxels(event);
       }
     } else if (this.type == 'c') {
-      cutVoxels(event);
+      this.cutVoxels(event);
     }
-    DRAGGING = null;
-    MOUSE_DOWN = false;
-    moveEventCount = 0;
+    this.DRAGGING = null;
+    this.MOUSE_DOWN = false;
+    this.moveEventCount = 0;
   }
   function onDocumentMouseOut(event) {
     log('MouseOut');
     event.preventDefault();
-    controls.enabled = true;
-    MOUSE_DOWN = false;
+    this.controls.enabled = true;
+    this.MOUSE_DOWN = false;
   }
 
   // Touch
