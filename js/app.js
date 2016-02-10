@@ -30,20 +30,6 @@ function Viewer(config) {
   this.CURRENT_MAX_TOUCH_COUNT = 0;
   this.TOUCH_END_COUNT = 0;
 
-  var createControls = function(){
-    var controls = new THREE.TrackballControls(camera);
-
-    controls.rotateSpeed = 1.0;
-    controls.zoomSpeed = 1.2;
-    controls.panSpeed = 0.8;
-    controls.noRotate = true;
-    controls.noZoom = false;
-    controls.noPan = true;
-    controls.staticMoving = true;
-    controls.dynamicDampingFactor = 0.3;
-    return controls;
-  }
-
   var createScene = function(){
     var scene = new THREE.Scene();
     return scene;
@@ -202,7 +188,7 @@ function Viewer(config) {
   var group = new THREE.Object3D();
   var edgegroup = new THREE.Object3D();
   var camera = this.createCamera();
-  var controls = createControls();
+  var controls = this.createControls(camera);
 
   var light = createLight();
   var cubes = createCubes();
@@ -603,4 +589,17 @@ Viewer.prototype.createCamera = function(){
   camera.position.y = 30;
   camera.position.z = 30;
   return camera;
+}
+
+Viewer.prototype.createControls = function(camera){
+  var controls = new THREE.TrackballControls(camera);
+  controls.rotateSpeed = 1.0;
+  controls.zoomSpeed = 1.2;
+  controls.panSpeed = 0.8;
+  controls.noRotate = true;
+  controls.noZoom = false;
+  controls.noPan = true;
+  controls.staticMoving = true;
+  controls.dynamicDampingFactor = 0.3;
+  return controls;
 }
