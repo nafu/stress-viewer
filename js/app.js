@@ -135,12 +135,12 @@ function Viewer(config) {
   function touchmove(event) {
     log('touchmove');
     event.preventDefault();
-    DRAGGING = true;
-    moveEventCount++;
-    log('moveEventCount = '+moveEventCount);
+    this.DRAGGING = true;
+    this.moveEventCount++;
+    log('moveEventCount = ' + this.moveEventCount);
 
-    mouseX = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
-    targetRotationX = targetRotationOnMouseDownX + ( mouseX - mouseXOnMouseDown ) * 2.05;
+    this.mouseX = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
+    this.targetRotationX = this.targetRotationOnMouseDownX + (this.mouseX - this.mouseXOnMouseDown) * 2.05;
 
     // log('targetRotationX = ' + targetRotationX);
   }
@@ -148,54 +148,54 @@ function Viewer(config) {
     log('touchstart');
     log(event);
     event.preventDefault();
-    CURRENT_MAX_TOUCH_COUNT += event.touches.length
+    this.CURRENT_MAX_TOUCH_COUNT += event.touches.length
     log('event.touches.length = ' + event.touches.length);
-    if (CURRENT_MAX_TOUCH_COUNT > 1 || event.touches.length > 1) {
-      MULTI_TOUCH_DETECTED = true;
+    if (this.CURRENT_MAX_TOUCH_COUNT > 1 || event.touches.length > 1) {
+      this.MULTI_TOUCH_DETECTED = true;
     }
-    DRAGGING_TIME_MS = 0;
-    if (!timerID) {
-      timerID = setInterval('countup()', 100);
+    this.DRAGGING_TIME_MS = 0;
+    if (!this.timerID) {
+      this.timerID = setInterval('countup()', 100);
     }
-    moveEventCount = 0;
+    this.moveEventCount = 0;
 
-    mouseXOnMouseDown = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
-    targetRotationOnMouseDownX = targetRotationX;
+    this.mouseXOnMouseDown = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
+    this.targetRotationOnMouseDownX = this.targetRotationX;
   }
   function touchend(event) {
     log('touchend');
     event.preventDefault();
-    controls.enabled = true;
+    this.controls.enabled = true;
 
-    if (!MULTI_TOUCH_DETECTED) {
+    if (!this.MULTI_TOUCH_DETECTED) {
       log('MULTI_TOUCH_DETECTED false');
       if (this.type == 'b') {
-        if (DRAGGING && DRAGGING_TIME_MS < 10 && moveEventCount > 0) {
+        if (this.DRAGGING && this.DRAGGING_TIME_MS < 10 && this.moveEventCount > 0) {
           log('cutVoxels');
-          cutVoxels(event);
-          DRAGGING = null;
+          this.cutVoxels(event);
+          this.DRAGGING = null;
         }
       } else if (this.type == 'c') {
         log('cutVoxels');
-        cutVoxels(event);
-        DRAGGING = null;
+        this.cutVoxels(event);
+        this.DRAGGING = null;
       }
     }
     clearInterval(timerID);
-    timerID = 0;
-    DRAGGING_TIME_MS = 0;
-    TOUCH_END_COUNT++;
-    if (TOUCH_END_COUNT >= CURRENT_MAX_TOUCH_COUNT) {
-      MULTI_TOUCH_DETECTED = false;
-      CURRENT_MAX_TOUCH_COUNT = 0;
-      TOUCH_END_COUNT = 0;
+    this.timerID = 0;
+    this.DRAGGING_TIME_MS = 0;
+    this.TOUCH_END_COUNT++;
+    if (this.TOUCH_END_COUNT >= this.CURRENT_MAX_TOUCH_COUNT) {
+      this.MULTI_TOUCH_DETECTED = false;
+      this.CURRENT_MAX_TOUCH_COUNT = 0;
+      this.TOUCH_END_COUNT = 0;
     }
   }
 
   function countup() {
    log('countup');
-   log('DRAGGING_TIME_MS = ' + DRAGGING_TIME_MS);
-   DRAGGING_TIME_MS++;
+   log('DRAGGING_TIME_MS = ' + this.DRAGGING_TIME_MS);
+   this.DRAGGING_TIME_MS++;
   }
 
   var container = $('body').append('<div>');
