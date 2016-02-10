@@ -41,7 +41,7 @@ function Viewer(config) {
   loadSound();
 
   var scene = this.createScene();
-  var group = new THREE.Object3D();
+  this.group = new THREE.Object3D();
   var edgegroup = new THREE.Object3D();
   var camera = this.createCamera();
   var controls = this.createControls(camera);
@@ -75,39 +75,6 @@ function Viewer(config) {
   var movedObjects = [];
 
   animate();
-
-  var getIntersects = function(event) {
-    // Return empty array if detecting multi-touch
-    log('getIntersects');
-    log(event);
-    if (event.changedTouches && event.changedTouches.length > 1) {
-      log('multi-touch detected');
-      return [];
-    }
-
-    //FIXME - Figure out whether 2 here and 0.5
-    // in the line below are related
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
-    if (event.changedTouches && event.changedTouches.length > 0) {
-      mouse.x = (event.changedTouches[0].clientX / window.innerWidth) * 2 - 1;
-      mouse.y = - (event.changedTouches[0].clientY / window.innerHeight) * 2 + 1;
-    }
-
-    //FIXME - Figure out logic behind 0.5
-    var vector = new THREE.Vector3(mouse.x, mouse.y ,0.5);
-
-    vector.unproject(camera);
-
-    var raycaster = new THREE.Raycaster(
-      camera.position,
-      vector.sub(camera.position).normalize()
-    );
-
-    var intersects = raycaster.intersectObjects(group.children);
-
-    return intersects;
-  }
 
   var cutVoxels = function(event) {
     log('cutVoxels');
@@ -603,4 +570,37 @@ Viewer.prototype.render = function(){
 
   this.renderer.render(this.scene, this.camera);
   TWEEN.update();
+}
+
+Viewer.prototype.getIntersects = function(event) {
+  // Return empty array if detecting multi-touch
+  log('getIntersects');
+  log(event);
+  if (event.changedTouches && event.changedTouches.length > 1) {
+    log('multi-touch detected');
+    return [];
+  }
+
+  //FIXME - Figure out whether 2 here and 0.5
+  // in the line below are related
+  this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  this.mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+  if (event.changedTouches && event.changedTouches.length > 0) {
+    this.mouse.x = (event.changedTouches[0].clientX / window.innerWidth) * 2 - 1;
+    this.mouse.y = - (event.changedTouches[0].clientY / window.innerHeight) * 2 + 1;
+  }
+
+  //FIXME - Figure out logic behind 0.5
+  var vector = new THREE.Vector3(this.mouse.x, this.mouse.y ,0.5);
+
+  vector.unproject(this.camera);
+
+  var raycaster = new THREE.Raycaster(
+    this.camera.position,
+    vector.sub(this.camera.position).normalize()
+  );
+
+  var intersects = raycaster.intersectObjects(this.group.children);
+
+  return intersects;
 }
