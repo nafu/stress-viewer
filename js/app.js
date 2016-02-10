@@ -31,14 +31,11 @@ function Viewer(config) {
   this.TOUCH_END_COUNT = 0;
 
   // Sound
-  var soundID = 'Swoosh';
-  function loadSound() {
-    createjs.Sound.registerSound('./sounds/swoosh.mp3', soundID);
-  }
+  this.soundID = 'Swoosh';
   function playSound() {
     createjs.Sound.play(soundID);
   }
-  loadSound();
+  this.loadSound();
 
   var scene = this.createScene();
   this.group = new THREE.Object3D();
@@ -603,4 +600,8 @@ Viewer.prototype.cutVoxels = function(event) {
       object.needsUpdate = true;
     });
   }
+}
+
+Viewer.prototype.loadSound() {
+  createjs.Sound.registerSound('./sounds/swoosh.mp3', this.soundID);
 }
