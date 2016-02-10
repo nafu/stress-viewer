@@ -48,7 +48,7 @@ function Viewer(config) {
 
   var light = this.createLight();
   var cubes = this.createCubes();
-  var renderer = this.createRenderer();
+  this.renderer = this.createRenderer();
 
   var projector = new THREE.Projector();
   var mouse = new THREE.Vector2()
@@ -66,22 +66,10 @@ function Viewer(config) {
   scene.add(edgegroup);
   scene.add(this.createPlane());
 
-  var render = function(){
-    log('mouseX - mouseXOnMouseDown = ' + (mouseX - mouseXOnMouseDown));
-    log('targetRotationX - group.rotation.y = ' + (targetRotationX - group.rotation.y));
-    if (Math.abs(mouseX - mouseXOnMouseDown) > 0.1 &&
-        Math.abs(targetRotationX - group.rotation.y) > 0.5 &&
-        Math.abs(targetRotationX - group.rotation.y) < 5) {
-      group.rotation.y += ( targetRotationX - group.rotation.y ) * 0.25;
-    }
-
-    renderer.render(scene,camera);
-    TWEEN.update();
-  }
   var animate = function(){
     requestAnimationFrame(animate);
     controls.update();
-    render();
+    this.render();
   }
 
   var movedObjects = [];
@@ -296,13 +284,13 @@ function Viewer(config) {
   }
 
   // Custom Event
-  renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);
-  renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
-  renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
-  renderer.domElement.addEventListener('mouseout', onDocumentMouseOut, false);
-  renderer.domElement.addEventListener('touchmove', touchmove, false );
-  renderer.domElement.addEventListener('touchstart', touchstart, false );
-  renderer.domElement.addEventListener('touchend', touchend, false );
+  this.renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);
+  this.renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
+  this.renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
+  this.renderer.domElement.addEventListener('mouseout', onDocumentMouseOut, false);
+  this.renderer.domElement.addEventListener('touchmove', touchmove, false );
+  this.renderer.domElement.addEventListener('touchstart', touchstart, false );
+  this.renderer.domElement.addEventListener('touchend', touchend, false );
 
   // Mouse
   function onDocumentMouseMove(event) {
@@ -424,7 +412,7 @@ function Viewer(config) {
   }
 
   var container = $('body').append('<div>');
-  $(container).append( renderer.domElement);
+  $(container).append(this.renderer.domElement);
 
   // Suppress mobile scroll
   document.ontouchmove = function(e) {e.preventDefault()};
@@ -602,4 +590,17 @@ Viewer.prototype.createPlane = function(){
           wireframe: true } ) );
   plane.visible = false;
   return plane;
+}
+
+Viewer.prototype.render = function(){
+  log('mouseX - mouseXOnMouseDown = ' + (this.mouseX - this.mouseXOnMouseDown));
+  log('targetRotationX - group.rotation.y = ' + (this.targetRotationX - this.group.rotation.y));
+  if (Math.abs(this.mouseX - this.mouseXOnMouseDown) > 0.1 &&
+      Math.abs(this.targetRotationX - this.group.rotation.y) > 0.5 &&
+      Math.abs(this.targetRotationX - this.group.rotation.y) < 5) {
+    this.group.rotation.y += ( this.targetRotationX - this.group.rotation.y ) * 0.25;
+  }
+
+  this.renderer.render(this.scene, this.camera);
+  TWEEN.update();
 }
