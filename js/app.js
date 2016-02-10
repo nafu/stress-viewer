@@ -66,7 +66,7 @@ function Viewer(config) {
 
   // Custom Event
   this.renderer.domElement.addEventListener('mousemove', this.onDocumentMouseMove, false);
-  this.renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
+  this.renderer.domElement.addEventListener('mousedown', this.onDocumentMouseDown, false);
   this.renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
   this.renderer.domElement.addEventListener('mouseout', onDocumentMouseOut, false);
   this.renderer.domElement.addEventListener('touchmove', touchmove, false );
@@ -74,18 +74,6 @@ function Viewer(config) {
   this.renderer.domElement.addEventListener('touchend', touchend, false );
 
   // Mouse
-  function onDocumentMouseDown(event) {
-    log('MouseDown');
-    event.preventDefault();
-    this.MOUSE_DOWN = true;
-    this.moveEventCount = 0;
-    if (this.getIntersects(event).length > 0) {
-      this.controls.enabled = false;
-    }
-
-    this.mouseXOnMouseDown = (event.clientX / window.innerWidth) * 2 - 1;
-    this.targetRotationOnMouseDownX = this.targetRotationX;
-  }
   function onDocumentMouseUp(event) {
     log('MouseUp');
     event.preventDefault();
@@ -607,4 +595,17 @@ Viewer.prototype.onDocumentMouseMove = function(event) {
 
     // log('targetRotationX = ' + targetRotationX);
   }
+}
+
+Viewer.prototype.onDocumentMouseDown = function(event) {
+  log('MouseDown');
+  event.preventDefault();
+  this.MOUSE_DOWN = true;
+  this.moveEventCount = 0;
+  if (this.getIntersects(event).length > 0) {
+    this.controls.enabled = false;
+  }
+
+  this.mouseXOnMouseDown = (event.clientX / window.innerWidth) * 2 - 1;
+  this.targetRotationOnMouseDownX = this.targetRotationX;
 }
