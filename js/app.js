@@ -65,21 +65,12 @@ function Viewer(config) {
   this.animate();
 
   // Custom Event
-  this.renderer.domElement.addEventListener('mousemove', this.onDocumentMouseMove, false);
-  this.renderer.domElement.addEventListener('mousedown', this.onDocumentMouseDown, false);
-  this.renderer.domElement.addEventListener('mouseup', this.onDocumentMouseUp, false);
-  this.renderer.domElement.addEventListener('mouseout', onDocumentMouseOut, false);
+  this.constructEventListner(this);
   this.renderer.domElement.addEventListener('touchmove', touchmove, false );
   this.renderer.domElement.addEventListener('touchstart', touchstart, false );
   this.renderer.domElement.addEventListener('touchend', touchend, false );
 
   // Mouse
-  function onDocumentMouseOut(event) {
-    log('MouseOut');
-    event.preventDefault();
-    this.controls.enabled = true;
-    this.MOUSE_DOWN = false;
-  }
 
   // Touch
   function touchmove(event) {
