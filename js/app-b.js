@@ -1,3 +1,6 @@
 (function() {
-  var viewerB = new Viewer();
+  var config = {
+    type: 'b'
+  }
+  var viewerB = new Viewer(config);
 }());
