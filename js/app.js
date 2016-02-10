@@ -1,4 +1,8 @@
-function Viewer() {
+function Viewer(config) {
+  this.type = config.type
+  log('config.type = ' + config.type);
+  log('this.type = ' + this.type);
+
   // NOTE: Set debugMode to true in debug-utility.js for debugging
   var width = window.innerWidth;
   var height = window.innerHeight;
@@ -308,38 +312,79 @@ function Viewer() {
       //intersects[0].object.material.color.setHex(0x000000);
       var moveObjects = [];
 
-      for (key in cubes) {
-        if (faceIndex == 8 || faceIndex == 9) {
-          if (event.ctrlKey) {
-            if (cubes[key].position.x >= selectedObject.position.x) {
-              index = movedObjects.indexOf(cubes[key])
-              if (index > -1) {
-                moveObjects.push(cubes[key]);
-                movedObjects.splice(index, 1);
+      if (this.type == 'b') {
+        log('this.type == b');
+        for (key in cubes) {
+          if (faceIndex == 8 || faceIndex == 9) {
+            if (event.ctrlKey) {
+              if (cubes[key].position.x >= selectedObject.position.x) {
+                index = movedObjects.indexOf(cubes[key])
+                if (index > -1) {
+                  moveObjects.push(cubes[key]);
+                  movedObjects.splice(index, 1);
+                }
+              }
+            } else {
+              if (cubes[key].position.x >= selectedObject.position.x) {
+                if ($.inArray(cubes[key], movedObjects) == -1) {
+                  moveObjects.push(cubes[key]);
+                  movedObjects.push(cubes[key]);
+                }
               }
             }
-          } else {
-            if (cubes[key].position.x >= selectedObject.position.x) {
-              if ($.inArray(cubes[key], movedObjects) == -1) {
-                moveObjects.push(cubes[key]);
-                movedObjects.push(cubes[key]);
+          } else if (faceIndex == 0 || faceIndex == 1) {
+            if (event.ctrlKey) {
+              if (cubes[key].position.z >= selectedObject.position.z) {
+                index = movedObjects.indexOf(cubes[key])
+                if (index > -1) {
+                  moveObjects.push(cubes[key]);
+                  movedObjects.splice(index, 1);
+                }
+              }
+            } else {
+              if (cubes[key].position.z >= selectedObject.position.z) {
+                if ($.inArray(cubes[key], movedObjects) == -1) {
+                  moveObjects.push(cubes[key]);
+                  movedObjects.push(cubes[key]);
+                }
               }
             }
           }
-        } else if (faceIndex == 0 || faceIndex == 1) {
-          if (event.ctrlKey) {
-            if (cubes[key].position.z >= selectedObject.position.z) {
-              index = movedObjects.indexOf(cubes[key])
-              if (index > -1) {
-                moveObjects.push(cubes[key]);
-                movedObjects.splice(index, 1);
+        }
+      } else if (this.type == 'c') {
+        for (key in cubes) {
+          if (faceIndex == 8 || faceIndex == 9) {
+            if (event.ctrlKey) {
+              if (cubes[key].position.z >= selectedObject.position.z) {
+                index = movedObjects.indexOf(cubes[key])
+                if (index > -1) {
+                  moveObjects.push(cubes[key]);
+                  movedObjects.splice(index, 1);
+                }
+              }
+            } else {
+              if (cubes[key].position.z >= selectedObject.position.z) {
+                if ($.inArray(cubes[key], movedObjects) == -1) {
+                  moveObjects.push(cubes[key]);
+                  movedObjects.push(cubes[key]);
+                }
               }
             }
-          } else {
-            if (cubes[key].position.z >= selectedObject.position.z) {
-              if ($.inArray(cubes[key], movedObjects) == -1) {
-                moveObjects.push(cubes[key]);
-                movedObjects.push(cubes[key]);
+          } else if (faceIndex == 0 || faceIndex == 1) {
+            if (event.ctrlKey) {
+              if (cubes[key].position.x >= selectedObject.position.x) {
+                index = movedObjects.indexOf(cubes[key])
+                if (index > -1) {
+                  moveObjects.push(cubes[key]);
+                  movedObjects.splice(index, 1);
+                }
+              }
+            } else {
+              if (cubes[key].position.x >= selectedObject.position.x) {
+                if ($.inArray(cubes[key], movedObjects) == -1) {
+                  moveObjects.push(cubes[key]);
+                  movedObjects.push(cubes[key]);
+                }
               }
             }
           }
@@ -370,25 +415,47 @@ function Viewer() {
         z:object.position.z
       };
 
-      if (faceIndex == 8 || faceIndex == 9) {
-        if (!firstClickedX) {
-          firstClickedX = clicked.x;
+      if (this.type == 'b') {
+        if (faceIndex == 8 || faceIndex == 9) {
+          if (!firstClickedX) {
+            firstClickedX = clicked.x;
+          }
+          if (event.ctrlKey) {
+            target.z+=10;
+          } else {
+            target.x = parseFloat(firstClickedX) + parseFloat(position.z - 0.5) + 10;
+            target.z = -position.x - 10;
+          }
+        } else if (faceIndex == 0 || faceIndex == 1) {
+          if (!firstClickedZ) {
+            firstClickedZ = clicked.x;
+          }
+          if (event.ctrlKey) {
+            target.z+=10;
+          } else {
+            target.x = - position.z - 10
+            target.z = parseFloat(firstClickedZ) + parseFloat(position.x - 0.5) + 10;
+          }
         }
-        if (event.ctrlKey) {
-          target.z+=10;
-        } else {
-          target.x = parseFloat(firstClickedX) + parseFloat(position.z - 0.5) + 10;
-          target.z = -position.x - 10;
-        }
-      } else if (faceIndex == 0 || faceIndex == 1) {
-        if (!firstClickedZ) {
-          firstClickedZ = clicked.x;
-        }
-        if (event.ctrlKey) {
-          target.z+=10;
-        } else {
-          target.x = - position.z - 10
-          target.z = parseFloat(firstClickedZ) + parseFloat(position.x - 0.5) + 10;
+      } else if (this.type == 'c') {
+        if (faceIndex == 8 || faceIndex == 9) {
+          if (!firstClickedX) {
+            firstClickedX = clicked.x;
+          }
+          if (event.ctrlKey) {
+            target.x+=10;
+          } else {
+            target.x-=10;
+          }
+        } else if (faceIndex == 0 || faceIndex == 1) {
+          if (!firstClickedZ) {
+            firstClickedZ = clicked.x;
+          }
+          if (event.ctrlKey) {
+            target.z+=10;
+          } else {
+            target.z-=10;
+          }
         }
       }
       tween = new TWEEN.Tween(position).to(target, 100);
@@ -445,7 +512,11 @@ function Viewer() {
     event.preventDefault();
     controls.enabled = true;
 
-    if (DRAGGING && moveEventCount > 5) {
+    if (this.type == 'b') {
+      if (DRAGGING && moveEventCount > 5) {
+        cutVoxels(event);
+      }
+    } else if (this.type == 'c') {
       cutVoxels(event);
     }
     DRAGGING = null;
@@ -497,7 +568,13 @@ function Viewer() {
 
     if (!MULTI_TOUCH_DETECTED) {
       log('MULTI_TOUCH_DETECTED false');
-      if (DRAGGING && DRAGGING_TIME_MS < 10 && moveEventCount > 0) {
+      if (this.type == 'b') {
+        if (DRAGGING && DRAGGING_TIME_MS < 10 && moveEventCount > 0) {
+          log('cutVoxels');
+          cutVoxels(event);
+          DRAGGING = null;
+        }
+      } else if (this.type == 'c') {
         log('cutVoxels');
         cutVoxels(event);
         DRAGGING = null;
