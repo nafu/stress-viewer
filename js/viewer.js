@@ -66,12 +66,6 @@ function Viewer(config) {
   // Custom Event
   this.constructEventListner(this);
 
-  function countup() {
-   log('countup');
-   log('DRAGGING_TIME_MS = ' + this.DRAGGING_TIME_MS);
-   this.DRAGGING_TIME_MS++;
-  }
-
   var container = $('body').append('<div>');
   $(container).append(this.renderer.domElement);
 
@@ -591,7 +585,7 @@ Viewer.prototype.touchstart = function(_self) {
     }
     _self.DRAGGING_TIME_MS = 0;
     if (!_self.timerID) {
-      _self.timerID = setInterval('countup()', 100);
+      _self.timerID = setInterval(function(){ _self.countup(); }, 100);
     }
     _self.moveEventCount = 0;
 
@@ -620,7 +614,7 @@ Viewer.prototype.touchend = function(_self) {
         _self.DRAGGING = null;
       }
     }
-    clearInterval(timerID);
+    clearInterval(_self.timerID);
     _self.timerID = 0;
     _self.DRAGGING_TIME_MS = 0;
     _self.TOUCH_END_COUNT++;
@@ -630,4 +624,10 @@ Viewer.prototype.touchend = function(_self) {
       _self.TOUCH_END_COUNT = 0;
     }
   }
+}
+
+Viewer.prototype.countup = function() {
+ log('countup');
+ log('DRAGGING_TIME_MS = ' + this.DRAGGING_TIME_MS);
+ this.DRAGGING_TIME_MS++;
 }
