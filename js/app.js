@@ -47,7 +47,7 @@ function Viewer(config) {
   var controls = this.createControls(camera);
 
   var light = this.createLight();
-  var cubes = this.createCubes();
+  this.cubes = this.createCubes();
   this.renderer = this.createRenderer();
 
   var projector = new THREE.Projector();
@@ -55,9 +55,9 @@ function Viewer(config) {
 
   scene.add(light);
 
-  for(key in cubes) {
-    group.add(cubes[key]);
-    var edge = new THREE.EdgesHelper(cubes[key], 0xffffff);
+  for(key in this.cubes) {
+    group.add(this.cubes[key]);
+    var edge = new THREE.EdgesHelper(this.cubes[key], 0xffffff);
     edge.material.linewidth = 0.1;
     edgegroup.add(edge);
   }
@@ -75,180 +75,6 @@ function Viewer(config) {
   var movedObjects = [];
 
   animate();
-
-  var cutVoxels = function(event) {
-    log('cutVoxels');
-    var intersects = getIntersects(event);
-
-    if ( intersects.length > 0 ) {
-      log('intersects[0]');
-      log(intersects[0]);
-      log('intersects[0].faceIndex');
-      log(intersects[0].faceIndex);
-      var faceIndex = intersects[0].faceIndex;
-      var point = intersects[0].point
-      var selectedObject = intersects[0].object;
-      //log('Few Objects Selected '+intersects.length);
-      //log(selectedObject);
-      //intersects[0].object.material.color.setHex(0x000000);
-      var moveObjects = [];
-
-      if (this.type == 'b') {
-        log('this.type == b');
-        for (key in cubes) {
-          if (faceIndex == 8 || faceIndex == 9) {
-            if (event.ctrlKey) {
-              if (cubes[key].position.x >= selectedObject.position.x) {
-                index = movedObjects.indexOf(cubes[key])
-                if (index > -1) {
-                  moveObjects.push(cubes[key]);
-                  movedObjects.splice(index, 1);
-                }
-              }
-            } else {
-              if (cubes[key].position.x >= selectedObject.position.x) {
-                if ($.inArray(cubes[key], movedObjects) == -1) {
-                  moveObjects.push(cubes[key]);
-                  movedObjects.push(cubes[key]);
-                }
-              }
-            }
-          } else if (faceIndex == 0 || faceIndex == 1) {
-            if (event.ctrlKey) {
-              if (cubes[key].position.z >= selectedObject.position.z) {
-                index = movedObjects.indexOf(cubes[key])
-                if (index > -1) {
-                  moveObjects.push(cubes[key]);
-                  movedObjects.splice(index, 1);
-                }
-              }
-            } else {
-              if (cubes[key].position.z >= selectedObject.position.z) {
-                if ($.inArray(cubes[key], movedObjects) == -1) {
-                  moveObjects.push(cubes[key]);
-                  movedObjects.push(cubes[key]);
-                }
-              }
-            }
-          }
-        }
-      } else if (this.type == 'c') {
-        for (key in cubes) {
-          if (faceIndex == 8 || faceIndex == 9) {
-            if (event.ctrlKey) {
-              if (cubes[key].position.z >= selectedObject.position.z) {
-                index = movedObjects.indexOf(cubes[key])
-                if (index > -1) {
-                  moveObjects.push(cubes[key]);
-                  movedObjects.splice(index, 1);
-                }
-              }
-            } else {
-              if (cubes[key].position.z >= selectedObject.position.z) {
-                if ($.inArray(cubes[key], movedObjects) == -1) {
-                  moveObjects.push(cubes[key]);
-                  movedObjects.push(cubes[key]);
-                }
-              }
-            }
-          } else if (faceIndex == 0 || faceIndex == 1) {
-            if (event.ctrlKey) {
-              if (cubes[key].position.x >= selectedObject.position.x) {
-                index = movedObjects.indexOf(cubes[key])
-                if (index > -1) {
-                  moveObjects.push(cubes[key]);
-                  movedObjects.splice(index, 1);
-                }
-              }
-            } else {
-              if (cubes[key].position.x >= selectedObject.position.x) {
-                if ($.inArray(cubes[key], movedObjects) == -1) {
-                  moveObjects.push(cubes[key]);
-                  movedObjects.push(cubes[key]);
-                }
-              }
-            }
-          }
-        }
-      }
-
-      if (moveObjects.length > 0) {
-        // Sound
-        playSound();
-
-        for (var i = 0; i < moveObjects.length; i++) {
-          moveTween(moveObjects[i], selectedObject.position, faceIndex);
-        }
-      }
-    } else {
-      log('No Objects Selected');
-    }
-
-    function moveTween(object, clicked, faceIndex) {
-      var position = {
-        x:object.position.x,
-        y:object.position.y,
-        z:object.position.z
-      };
-      var target = {
-        x:object.position.x,
-        y:object.position.y,
-        z:object.position.z
-      };
-
-      if (this.type == 'b') {
-        if (faceIndex == 8 || faceIndex == 9) {
-          if (!firstClickedX) {
-            firstClickedX = clicked.x;
-          }
-          if (event.ctrlKey) {
-            target.z+=10;
-          } else {
-            target.x = parseFloat(firstClickedX) + parseFloat(position.z - 0.5) + 10;
-            target.z = -position.x - 10;
-          }
-        } else if (faceIndex == 0 || faceIndex == 1) {
-          if (!firstClickedZ) {
-            firstClickedZ = clicked.x;
-          }
-          if (event.ctrlKey) {
-            target.z+=10;
-          } else {
-            target.x = - position.z - 10
-            target.z = parseFloat(firstClickedZ) + parseFloat(position.x - 0.5) + 10;
-          }
-        }
-      } else if (this.type == 'c') {
-        if (faceIndex == 8 || faceIndex == 9) {
-          if (!firstClickedX) {
-            firstClickedX = clicked.x;
-          }
-          if (event.ctrlKey) {
-            target.x+=10;
-          } else {
-            target.x-=10;
-          }
-        } else if (faceIndex == 0 || faceIndex == 1) {
-          if (!firstClickedZ) {
-            firstClickedZ = clicked.x;
-          }
-          if (event.ctrlKey) {
-            target.z+=10;
-          } else {
-            target.z-=10;
-          }
-        }
-      }
-      tween = new TWEEN.Tween(position).to(target, 100);
-      tween.start();
-      tween.onUpdate(function(){
-        log('tween.onUpdate');
-        object.position.x = this.x;
-        object.position.z = this.z;
-        object.needsUpdate = true;
-      });
-    }
-  }
 
   // Custom Event
   this.renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);
@@ -603,4 +429,178 @@ Viewer.prototype.getIntersects = function(event) {
   var intersects = raycaster.intersectObjects(this.group.children);
 
   return intersects;
+}
+
+Viewer.prototype.cutVoxels = function(event) {
+  log('cutVoxels');
+  var intersects = this.getIntersects(event);
+
+  if (intersects.length > 0) {
+    log('intersects[0]');
+    log(intersects[0]);
+    log('intersects[0].faceIndex');
+    log(intersects[0].faceIndex);
+    var faceIndex = intersects[0].faceIndex;
+    var point = intersects[0].point
+    var selectedObject = intersects[0].object;
+    //log('Few Objects Selected '+intersects.length);
+    //log(selectedObject);
+    //intersects[0].object.material.color.setHex(0x000000);
+    var moveObjects = [];
+
+    if (this.type == 'b') {
+      log('this.type == b');
+      for (key in this.cubes) {
+        if (faceIndex == 8 || faceIndex == 9) {
+          if (event.ctrlKey) {
+            if (this.cubes[key].position.x >= selectedObject.position.x) {
+              index = this.movedObjects.indexOf(this.cubes[key])
+              if (index > -1) {
+                moveObjects.push(this.cubes[key]);
+                this.movedObjects.splice(index, 1);
+              }
+            }
+          } else {
+            if (this.cubes[key].position.x >= selectedObject.position.x) {
+              if ($.inArray(this.cubes[key], this.movedObjects) == -1) {
+                moveObjects.push(this.cubes[key]);
+                this.movedObjects.push(this.cubes[key]);
+              }
+            }
+          }
+        } else if (faceIndex == 0 || faceIndex == 1) {
+          if (event.ctrlKey) {
+            if (this.cubes[key].position.z >= selectedObject.position.z) {
+              index = this.movedObjects.indexOf(this.cubes[key])
+              if (index > -1) {
+                moveObjects.push(this.cubes[key]);
+                this.movedObjects.splice(index, 1);
+              }
+            }
+          } else {
+            if (this.cubes[key].position.z >= selectedObject.position.z) {
+              if ($.inArray(this.cubes[key], this.movedObjects) == -1) {
+                moveObjects.push(this.cubes[key]);
+                this.movedObjects.push(this.cubes[key]);
+              }
+            }
+          }
+        }
+      }
+    } else if (this.type == 'c') {
+      for (key in this.cubes) {
+        if (faceIndex == 8 || faceIndex == 9) {
+          if (event.ctrlKey) {
+            if (this.cubes[key].position.z >= selectedObject.position.z) {
+              index = this.movedObjects.indexOf(this.cubes[key])
+              if (index > -1) {
+                moveObjects.push(this.cubes[key]);
+                this.movedObjects.splice(index, 1);
+              }
+            }
+          } else {
+            if (this.cubes[key].position.z >= selectedObject.position.z) {
+              if ($.inArray(this.cubes[key], this.movedObjects) == -1) {
+                moveObjects.push(this.cubes[key]);
+                this.movedObjects.push(this.cubes[key]);
+              }
+            }
+          }
+        } else if (faceIndex == 0 || faceIndex == 1) {
+          if (event.ctrlKey) {
+            if (this.cubes[key].position.x >= selectedObject.position.x) {
+              index = this.movedObjects.indexOf(this.cubes[key])
+              if (index > -1) {
+                moveObjects.push(this.cubes[key]);
+                this.movedObjects.splice(index, 1);
+              }
+            }
+          } else {
+            if (this.cubes[key].position.x >= selectedObject.position.x) {
+              if ($.inArray(this.cubes[key], this.movedObjects) == -1) {
+                moveObjects.push(this.cubes[key]);
+                this.movedObjects.push(this.cubes[key]);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if (moveObjects.length > 0) {
+      // Sound
+      playSound();
+
+      for (var i = 0; i < moveObjects.length; i++) {
+        moveTween(moveObjects[i], selectedObject.position, faceIndex);
+      }
+    }
+  } else {
+    log('No Objects Selected');
+  }
+
+  function moveTween(object, clicked, faceIndex) {
+    var position = {
+      x:object.position.x,
+      y:object.position.y,
+      z:object.position.z
+    };
+    var target = {
+      x:object.position.x,
+      y:object.position.y,
+      z:object.position.z
+    };
+
+    if (this.type == 'b') {
+      if (faceIndex == 8 || faceIndex == 9) {
+        if (!firstClickedX) {
+          firstClickedX = clicked.x;
+        }
+        if (event.ctrlKey) {
+          target.z+=10;
+        } else {
+          target.x = parseFloat(firstClickedX) + parseFloat(position.z - 0.5) + 10;
+          target.z = -position.x - 10;
+        }
+      } else if (faceIndex == 0 || faceIndex == 1) {
+        if (!firstClickedZ) {
+          firstClickedZ = clicked.x;
+        }
+        if (event.ctrlKey) {
+          target.z+=10;
+        } else {
+          target.x = - position.z - 10
+          target.z = parseFloat(firstClickedZ) + parseFloat(position.x - 0.5) + 10;
+        }
+      }
+    } else if (this.type == 'c') {
+      if (faceIndex == 8 || faceIndex == 9) {
+        if (!firstClickedX) {
+          firstClickedX = clicked.x;
+        }
+        if (event.ctrlKey) {
+          target.x+=10;
+        } else {
+          target.x-=10;
+        }
+      } else if (faceIndex == 0 || faceIndex == 1) {
+        if (!firstClickedZ) {
+          firstClickedZ = clicked.x;
+        }
+        if (event.ctrlKey) {
+          target.z+=10;
+        } else {
+          target.z-=10;
+        }
+      }
+    }
+    tween = new TWEEN.Tween(position).to(target, 100);
+    tween.start();
+    tween.onUpdate(function(){
+      log('tween.onUpdate');
+      object.position.x = this.x;
+      object.position.z = this.z;
+      object.needsUpdate = true;
+    });
+  }
 }
