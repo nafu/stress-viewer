@@ -599,10 +599,10 @@ Viewer.prototype.cutVoxels = function(event) {
   }
 }
 
-Viewer.prototype.loadSound() {
+Viewer.prototype.loadSound = function() {
   createjs.Sound.registerSound('./sounds/swoosh.mp3', this.soundID);
 }
 
-Viewer.prototype.playSound() {
+Viewer.prototype.playSound = function() {
   createjs.Sound.play(this.soundID);
 }
