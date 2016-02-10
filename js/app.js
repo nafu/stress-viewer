@@ -30,12 +30,6 @@ function Viewer(config) {
   this.CURRENT_MAX_TOUCH_COUNT = 0;
   this.TOUCH_END_COUNT = 0;
 
-  var createLight = function(){
-    var light = new THREE.AmbientLight(0xffffff);
-    light.position.set(0, 500, 2000);
-    return light;
-  }
-
   var createCube = function(id, x, y, z, color) {
     // TODO: Refactor
     // For bone-mises
@@ -185,7 +179,7 @@ function Viewer(config) {
   var camera = this.createCamera();
   var controls = this.createControls(camera);
 
-  var light = createLight();
+  var light = this.createLight();
   var cubes = createCubes();
   var renderer = this.createRenderer();
 
@@ -602,4 +596,10 @@ Viewer.prototype.createControls = function(camera){
 Viewer.prototype.createScene = function(){
   var scene = new THREE.Scene();
   return scene;
+}
+
+Viewer.prototype.createLight = function(){
+  var light = new THREE.AmbientLight(0xffffff);
+  light.position.set(0, 500, 2000);
+  return light;
 }
