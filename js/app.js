@@ -6,7 +6,7 @@ function Viewer(config) {
   // NOTE: Set debugMode to true in debug-utility.js for debugging
   this.width = window.innerWidth;
   this.height = window.innerHeight;
-  this.aspect = width/height;
+  this.aspect = this.width / this.height;
   this.near = 1;
   this.far = 10000;
   this.angle = 45;
