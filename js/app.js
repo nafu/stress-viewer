@@ -45,7 +45,7 @@ function Viewer(config) {
   this.renderer = this.createRenderer();
 
   var projector = new THREE.Projector();
-  var mouse = new THREE.Vector2()
+  this.mouse = new THREE.Vector2()
 
   this.scene.add(light);
 
@@ -60,7 +60,7 @@ function Viewer(config) {
   this.scene.add(edgegroup);
   this.scene.add(this.createPlane());
 
-  var movedObjects = [];
+  this.movedObjects = [];
 
   this.animate();
 
