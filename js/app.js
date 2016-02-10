@@ -32,9 +32,6 @@ function Viewer(config) {
 
   // Sound
   this.soundID = 'Swoosh';
-  function playSound() {
-    createjs.Sound.play(soundID);
-  }
   this.loadSound();
 
   var scene = this.createScene();
@@ -526,7 +523,7 @@ Viewer.prototype.cutVoxels = function(event) {
 
     if (moveObjects.length > 0) {
       // Sound
-      playSound();
+      this.playSound();
 
       for (var i = 0; i < moveObjects.length; i++) {
         moveTween(moveObjects[i], selectedObject.position, faceIndex);
@@ -604,4 +601,8 @@ Viewer.prototype.cutVoxels = function(event) {
 
 Viewer.prototype.loadSound() {
   createjs.Sound.registerSound('./sounds/swoosh.mp3', this.soundID);
+}
+
+Viewer.prototype.playSound() {
+  createjs.Sound.play(this.soundID);
 }
