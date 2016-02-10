@@ -30,14 +30,6 @@ function Viewer(config) {
   this.CURRENT_MAX_TOUCH_COUNT = 0;
   this.TOUCH_END_COUNT = 0;
 
-  var createCamera = function(){
-    var camera = new THREE.PerspectiveCamera(angle, aspect, near, far);
-    camera.position.x = 30;
-    camera.position.y = 30;
-    camera.position.z = 30;
-    return camera;
-  }
-
   var createControls = function(){
     var controls = new THREE.TrackballControls(camera);
 
@@ -209,7 +201,7 @@ function Viewer(config) {
   var scene = createScene();
   var group = new THREE.Object3D();
   var edgegroup = new THREE.Object3D();
-  var camera = createCamera();
+  var camera = this.createCamera();
   var controls = createControls();
 
   var light = createLight();
@@ -603,4 +595,12 @@ Viewer.prototype.createRenderer = function(){
   );
   renderer.setSize(this.width, this.height);
   return renderer;
+}
+
+Viewer.prototype.createCamera = function(){
+  var camera = new THREE.PerspectiveCamera(this.angle, this.aspect, this.near, this.far);
+  camera.position.x = 30;
+  camera.position.y = 30;
+  camera.position.z = 30;
+  return camera;
 }
