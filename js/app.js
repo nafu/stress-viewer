@@ -476,77 +476,80 @@ Viewer.prototype.cutVoxels = function(event) {
       this.playSound();
 
       for (var i = 0; i < moveObjects.length; i++) {
-        moveTween(moveObjects[i], selectedObject.position, faceIndex);
+        log('moveTween');
+        this.moveTween(moveObjects[i], selectedObject.position, faceIndex);
       }
     }
   } else {
     log('No Objects Selected');
   }
+}
 
-  function moveTween(object, clicked, faceIndex) {
-    var position = {
-      x:object.position.x,
-      y:object.position.y,
-      z:object.position.z
-    };
-    var target = {
-      x:object.position.x,
-      y:object.position.y,
-      z:object.position.z
-    };
+Viewer.prototype.moveTween = function(object, clicked, faceIndex) {
+  var position = {
+    x:object.position.x,
+    y:object.position.y,
+    z:object.position.z
+  };
+  var target = {
+    x:object.position.x,
+    y:object.position.y,
+    z:object.position.z
+  };
 
-    if (this.type == 'b') {
-      if (faceIndex == 8 || faceIndex == 9) {
-        if (!firstClickedX) {
-          firstClickedX = clicked.x;
-        }
-        if (event.ctrlKey) {
-          target.z+=10;
-        } else {
-          target.x = parseFloat(firstClickedX) + parseFloat(position.z - 0.5) + 10;
-          target.z = -position.x - 10;
-        }
-      } else if (faceIndex == 0 || faceIndex == 1) {
-        if (!firstClickedZ) {
-          firstClickedZ = clicked.x;
-        }
-        if (event.ctrlKey) {
-          target.z+=10;
-        } else {
-          target.x = - position.z - 10
-          target.z = parseFloat(firstClickedZ) + parseFloat(position.x - 0.5) + 10;
-        }
+  if (this.type == 'b') {
+    if (faceIndex == 8 || faceIndex == 9) {
+      if (!this.firstClickedX) {
+        this.firstClickedX = clicked.x;
       }
-    } else if (this.type == 'c') {
-      if (faceIndex == 8 || faceIndex == 9) {
-        if (!firstClickedX) {
-          firstClickedX = clicked.x;
-        }
-        if (event.ctrlKey) {
-          target.x+=10;
-        } else {
-          target.x-=10;
-        }
-      } else if (faceIndex == 0 || faceIndex == 1) {
-        if (!firstClickedZ) {
-          firstClickedZ = clicked.x;
-        }
-        if (event.ctrlKey) {
-          target.z+=10;
-        } else {
-          target.z-=10;
-        }
+      if (event.ctrlKey) {
+        target.z+=10;
+      } else {
+        target.x = parseFloat(this.firstClickedX) + parseFloat(position.z - 0.5) + 10;
+        target.z = -position.x - 10;
+      }
+    } else if (faceIndex == 0 || faceIndex == 1) {
+      if (!this.firstClickedZ) {
+        firstClickedZ = clicked.x;
+      }
+      if (event.ctrlKey) {
+        target.z+=10;
+      } else {
+        target.x = - position.z - 10
+        target.z = parseFloat(this.firstClickedZ) + parseFloat(position.x - 0.5) + 10;
       }
     }
-    tween = new TWEEN.Tween(position).to(target, 100);
-    tween.start();
-    tween.onUpdate(function(){
-      log('tween.onUpdate');
-      object.position.x = this.x;
-      object.position.z = this.z;
-      object.needsUpdate = true;
-    });
+  } else if (this.type == 'c') {
+    if (faceIndex == 8 || faceIndex == 9) {
+      if (!this.firstClickedX) {
+        this.firstClickedX = clicked.x;
+      }
+      if (event.ctrlKey) {
+        target.x+=10;
+      } else {
+        target.x-=10;
+      }
+    } else if (faceIndex == 0 || faceIndex == 1) {
+      if (!this.firstClickedZ) {
+        this.firstClickedZ = clicked.x;
+      }
+      if (event.ctrlKey) {
+        target.z+=10;
+      } else {
+        target.z-=10;
+      }
+    }
   }
+  tween = new TWEEN.Tween(position).to(target, 100);
+  tween.start();
+  tween.onUpdate(function(){
+    log('tween.onUpdate');
+    log('object.position.x = ' + this.x);
+    log('object.position.z = ' + this.z);
+    object.position.x = this.x;
+    object.position.z = this.z;
+    object.needsUpdate = true;
+  });
 }
 
 Viewer.prototype.loadSound = function() {
