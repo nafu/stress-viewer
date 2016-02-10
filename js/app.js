@@ -601,6 +601,6 @@ Viewer.prototype.createRenderer = function(){
   var renderer =  new THREE.WebGLRenderer(
     { antialias: true, alpha: true }
   );
-  renderer.setSize(width,height);
+  renderer.setSize(this.width, this.height);
   return renderer;
 }
