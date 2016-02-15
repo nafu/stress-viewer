@@ -133,6 +133,10 @@ function Viewer(config) {
   this.TOUCH_END_COUNT = 0;
 
   // Sound
+  /**
+   * 再生する音声ID
+   * @return {String}
+   */
   this.soundID = 'Swoosh';
   this.loadSound();
 
