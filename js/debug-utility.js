@@ -1,4 +1,14 @@
+/**
+ * @fileOverview デバック用スクリプト
+ *
+ * @author Fumiya Nakamura
+ * @version 1.0.0
+ */
+
 (function(){
+  // debugModeをtrueにするとログが出力される
+  // debugMode以外は変更の必要なし
+  // var debugMode = true;
   var debugMode = false;
   var methods = [
    'log',
