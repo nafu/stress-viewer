@@ -58,11 +58,30 @@ function Viewer(config) {
    * @return {Number}
    */
   this.angle = 45;
+  /**
+   * マウスがクリックされている状態か
+   * @return {Bool}
+   */
   this.MOUSE_DOWN = false;
+  /**
+   * マウス（タッチ）でドラッグされている状態か
+   * @return {Bool}
+   */
   this.DRAGGING = false;
+  /**
+   * タッチ動作継続時間
+   * @return {Number}
+   */
   this.DRAGGING_TIME_MS = 0;
+  /**
+   * タッチ動作継続時間を数えるためのタイマーID
+   * @return {Number}
+   */
   this.timerID = 0;
-
+  /**
+   * マウス（タッチ）のmoveイベント実行回数
+   * @return {Number}
+   */
   this.moveEventCount = 0;
 
   this.firstClickedX = null;
