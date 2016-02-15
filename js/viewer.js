@@ -58,7 +58,6 @@ function Viewer(config) {
    * @return {Number}
    */
   this.angle = 45;
-  this.tween = null;
   this.MOUSE_DOWN = false;
   this.DRAGGING = null;
   this.DRAGGING_TIME_MS = 0;
