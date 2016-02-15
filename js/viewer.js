@@ -1,3 +1,24 @@
+/**
+ * @fileOverview 応力集中部ビューアクラス
+ *
+ * @author Fumiya Nakamura
+ * @version 1.0.0
+ */
+
+/**
+ * Three.jsを利用して3Dモデルを描画、断面を取ることができます。
+ *
+ * @class 応力集中部ビューアのクラスです。<br>
+ * Three.jsを利用して3Dモデルを描画し、断面を取る機能を保有します。
+ *
+ * @param {Hash} config 設定情報
+ *
+ * @example
+ * var config = {
+ *   type: 'c'
+ * }
+ * var viewerC = new Viewer(config);
+ */
 function Viewer(config) {
   this.type = config.type
   log('config.type = ' + config.type);
