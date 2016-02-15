@@ -28,7 +28,6 @@ function Viewer(config) {
   log('config.type = ' + config.type);
   log('this.type = ' + this.type);
 
-  // NOTE: Set debugMode to true in debug-utility.js for debugging
   /**
    * Viewerの幅
    * @return {Number}
