@@ -20,16 +20,44 @@
  * var viewerC = new Viewer(config);
  */
 function Viewer(config) {
+  /**
+   * Viewerの種類
+   * @return {String}
+   */
   this.type = config.type
   log('config.type = ' + config.type);
   log('this.type = ' + this.type);
 
   // NOTE: Set debugMode to true in debug-utility.js for debugging
+  /**
+   * Viewerの幅
+   * @return {Number}
+   */
   this.width = window.innerWidth;
+  /**
+   * Viewerの高さ
+   * @return {Number}
+   */
   this.height = window.innerHeight;
+  /**
+   * Viewerの縦横比
+   * @return {Number}
+   */
   this.aspect = this.width / this.height;
+  /**
+   * Cameraのクリッピング手前
+   * @return {Number}
+   */
   this.near = 1;
+  /**
+   * Cameraのクリッピング奥
+   * @return {Number}
+   */
   this.far = 10000;
+  /**
+   * Cameraの角度
+   * @return {Number}
+   */
   this.angle = 45;
   this.tween = null;
   this.MOUSE_DOWN = false;
