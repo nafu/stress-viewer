@@ -84,7 +84,15 @@ function Viewer(config) {
    */
   this.moveEventCount = 0;
 
+  /**
+   * 最初に断面をとった時のcubesのx位置
+   * @return {Number}
+   */
   this.firstClickedX = null;
+  /**
+   * 最初に断面をとった時のcubesのz位置
+   * @return {Number}
+   */
   this.firstClickedZ = null;
 
   this.targetRotationX = 0;
