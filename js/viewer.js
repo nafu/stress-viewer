@@ -206,6 +206,12 @@ function Viewer(config) {
   $(container).ontouchmove = function(e) {e.stopPropagation()};
 }
 
+/**
+ * レンダラーを作成する
+ *
+ * @example
+ * viewer.createRenderer();
+ */
 Viewer.prototype.createRenderer = function(){
   var renderer =  new THREE.WebGLRenderer(
     { antialias: true, alpha: true }
@@ -214,6 +220,12 @@ Viewer.prototype.createRenderer = function(){
   return renderer;
 }
 
+/**
+ * カメラを作成する
+ *
+ * @example
+ * viewer.createCamera();
+ */
 Viewer.prototype.createCamera = function(){
   var myCamera = new THREE.PerspectiveCamera(this.angle, this.aspect, this.near, this.far);
   myCamera.position.x = 30;
@@ -222,6 +234,12 @@ Viewer.prototype.createCamera = function(){
   return myCamera;
 }
 
+/**
+ * コントロールを作成する
+ *
+ * @example
+ * viewer.createControls();
+ */
 Viewer.prototype.createControls = function(){
   var myControls = new THREE.TrackballControls(this.camera);
   myControls.rotateSpeed = 1.0;
@@ -235,17 +253,35 @@ Viewer.prototype.createControls = function(){
   return myControls;
 }
 
+/**
+ * シーンを作成する
+ *
+ * @example
+ * viewer.createScene();
+ */
 Viewer.prototype.createScene = function(){
   var scene = new THREE.Scene();
   return scene;
 }
 
+/**
+ * ライトを作成する
+ *
+ * @example
+ * viewer.createLight();
+ */
 Viewer.prototype.createLight = function(){
   var light = new THREE.AmbientLight(0xffffff);
   light.position.set(0, 500, 2000);
   return light;
 }
 
+/**
+ * Cube（Voxel）を作成する
+ *
+ * @example
+ * viewer.createCube();
+ */
 Viewer.prototype.createCube = function(id, x, y, z, color) {
   // TODO: Refactor
   // For bone-mises
@@ -270,6 +306,12 @@ Viewer.prototype.createCube = function(id, x, y, z, color) {
   return object;
 }
 
+/**
+ * テキストデータからコンター色を決定しVoxelを生成する
+ *
+ * @example
+ * viewer.processData();
+ */
 Viewer.prototype.processData = function(allText) {
   var objects = {};
 
@@ -352,6 +394,12 @@ Viewer.prototype.processData = function(allText) {
   return objects;
 }
 
+/**
+ * VoxelデータCSVを読み込んで、Cubes（Voxels）を生成する
+ *
+ * @example
+ * viewer.createCubes();
+ */
 Viewer.prototype.createCubes = function(){
   var data = $.ajax({
       type: "GET",
@@ -363,6 +411,12 @@ Viewer.prototype.createCubes = function(){
   return this.processData(data);
 };
 
+/**
+ * Planeを作成する
+ *
+ * @example
+ * viewer.createPlane();
+ */
 Viewer.prototype.createPlane = function(){
   var plane =
     new THREE.Mesh(
@@ -379,6 +433,12 @@ Viewer.prototype.createPlane = function(){
   return plane;
 }
 
+/**
+ * 描画（レンダー）を行なう
+ *
+ * @example
+ * viewer.render();
+ */
 Viewer.prototype.render = function(){
   //log('mouseX - mouseXOnMouseDown = ' + (this.mouseX - this.mouseXOnMouseDown));
   //log('targetRotationX - group.rotation.y = ' + (this.targetRotationX - this.group.rotation.y));
@@ -392,6 +452,12 @@ Viewer.prototype.render = function(){
   TWEEN.update();
 }
 
+/**
+ * 断面をとる位置を特定する
+ *
+ * @example
+ * viewer.getIntersects();
+ */
 Viewer.prototype.getIntersects = function(event) {
   // Return empty array if detecting multi-touch
   log('getIntersects');
@@ -425,6 +491,12 @@ Viewer.prototype.getIntersects = function(event) {
   return intersects;
 }
 
+/**
+ * 断面をとる
+ *
+ * @example
+ * viewer.getVoxels();
+ */
 Viewer.prototype.cutVoxels = function(event) {
   log('cutVoxels');
   var intersects = this.getIntersects(event);
@@ -535,6 +607,12 @@ Viewer.prototype.cutVoxels = function(event) {
   }
 }
 
+/**
+ * 断面をとるアニメーションを実行する
+ *
+ * @example
+ * viewer.moveTween();
+ */
 Viewer.prototype.moveTween = function(object, clicked, faceIndex) {
   var position = {
     x:object.position.x,
@@ -602,14 +680,32 @@ Viewer.prototype.moveTween = function(object, clicked, faceIndex) {
   });
 }
 
+/**
+ * 音声を読み込む　
+ *
+ * @example
+ * viewer.loadSound();
+ */
 Viewer.prototype.loadSound = function() {
   createjs.Sound.registerSound('./sounds/swoosh.mp3', this.soundID);
 }
 
+/**
+ * 読み込み済みの音声を再生する
+ *
+ * @example
+ * viewer.playSound();
+ */
 Viewer.prototype.playSound = function() {
   createjs.Sound.play(this.soundID);
 }
 
+/**
+ * アニメーションを実行する
+ *
+ * @example
+ * viewer.animate();
+ */
 Viewer.prototype.animate = function(){
   requestAnimationFrame(this.animate.bind(this));
   log('animate');
@@ -617,6 +713,13 @@ Viewer.prototype.animate = function(){
   this.render();
 }
 
+/**
+ * イベントリスナーを設定する
+ * （マウスやタッチのイベントを検出できるようにする）
+ *
+ * @example
+ * viewer.constructEventListner();
+ */
 Viewer.prototype.constructEventListner = function(_self) {
   this.renderer.domElement.addEventListener('mousemove', this.onDocumentMouseMove(_self), false);
   this.renderer.domElement.addEventListener('mousedown', this.onDocumentMouseDown(_self), false);
@@ -628,6 +731,9 @@ Viewer.prototype.constructEventListner = function(_self) {
   this.renderer.domElement.addEventListener('touchend', this.touchend(_self), false );
 }
 
+/**
+ * マウスを移動する時のイベント
+ */
 Viewer.prototype.onDocumentMouseMove = function(_self) {
   return function(event) {
     log('MouseMove');
@@ -647,6 +753,9 @@ Viewer.prototype.onDocumentMouseMove = function(_self) {
   }
 }
 
+/**
+ * マウスをクリックする時のイベント
+ */
 Viewer.prototype.onDocumentMouseDown = function(_self) {
   return function(event) {
     log('MouseDown');
@@ -681,6 +790,9 @@ Viewer.prototype.onDocumentMouseUp = function(_self) {
   }
 }
 
+/**
+ * マウスがブラウザから外れる時のイベント
+ */
 Viewer.prototype.onDocumentMouseOut = function(_self) {
   return function(event) {
     log('MouseOut');
@@ -690,6 +802,9 @@ Viewer.prototype.onDocumentMouseOut = function(_self) {
   }
 }
 
+/**
+ * タッチが移動する時のイベント
+ */
 Viewer.prototype.touchmove = function(_self) {
   return function(event) {
     log('touchmove');
@@ -705,6 +820,9 @@ Viewer.prototype.touchmove = function(_self) {
   }
 }
 
+/**
+ * タッチ開始時のイベント
+ */
 Viewer.prototype.touchstart = function(_self) {
   return function(event) {
     log('touchstart');
@@ -726,6 +844,9 @@ Viewer.prototype.touchstart = function(_self) {
   }
 }
 
+/**
+ * タッチ終了時のイベント　
+ */
 Viewer.prototype.touchend = function(_self) {
   return function(event) {
     log('touchend');
@@ -758,6 +879,12 @@ Viewer.prototype.touchend = function(_self) {
   }
 }
 
+/**
+ * ドラッグタイムをカウントアップする
+ *
+ * @example
+ * viewer.countup();
+ */
 Viewer.prototype.countup = function() {
  log('countup');
  log('DRAGGING_TIME_MS = ' + this.DRAGGING_TIME_MS);
