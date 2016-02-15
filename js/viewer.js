@@ -95,9 +95,25 @@ function Viewer(config) {
    */
   this.firstClickedZ = null;
 
+  /**
+   * 回転動作用の目標位置
+   * @return {Number}
+   */
   this.targetRotationX = 0;
+  /**
+   * マウスダウン時の回転動作用の目標位置
+   * @return {Number}
+   */
   this.targetRotationOnMouseDownX = 0;
+  /**
+   * マウスのx位置
+   * @return {Number}
+   */
   this.mouseX = 0;
+  /**
+   * マウスダウン時のマウスのx位置
+   * @return {Number}
+   */
   this.mouseXOnMouseDown = 0;
 
   this.MULTI_TOUCH_DETECTED = false;
