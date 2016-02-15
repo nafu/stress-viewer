@@ -116,8 +116,20 @@ function Viewer(config) {
    */
   this.mouseXOnMouseDown = 0;
 
+  /**
+   * マルチタッチが検出されているか
+   * @return {Bool}
+   */
   this.MULTI_TOUCH_DETECTED = false;
+  /**
+   * 最大タッチ数
+   * @return {Number}
+   */
   this.CURRENT_MAX_TOUCH_COUNT = 0;
+  /**
+   * タッチエンド数
+   * @return {Number}
+   */
   this.TOUCH_END_COUNT = 0;
 
   // Sound
