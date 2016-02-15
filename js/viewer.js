@@ -140,18 +140,40 @@ function Viewer(config) {
   this.soundID = 'Swoosh';
   this.loadSound();
 
+  /**
+   * Three.jsのシーン
+   */
   this.scene = this.createScene();
+  /**
+   * cubesの集まりを扱うオブジェクト
+   */
   this.group = new THREE.Object3D();
   var edgegroup = new THREE.Object3D();
+  /**
+   * Three.jsのカメラ
+   */
   this.camera = this.createCamera();
+  /**
+   * Three.jsのマウスやタッチのコントロール
+   */
   this.controls = this.createControls();
 
   var light = this.createLight();
+  /**
+   * voxelの集まり
+   */
   this.cubes = this.createCubes();
+  /**
+   * レンダラー
+   */
   this.renderer = this.createRenderer();
 
+  /**
+   * 断面を取るためのマウス位置を表すベクター
+   */
   this.mouse = new THREE.Vector2()
 
+  // シーンにオブジェクトを追加
   this.scene.add(light);
 
   for(key in this.cubes) {
@@ -164,7 +186,11 @@ function Viewer(config) {
   this.scene.add(this.group);
   this.scene.add(edgegroup);
   this.scene.add(this.createPlane());
+  // /シーンにオブジェクトを追加
 
+  /**
+   * 断面をとって、移動済みのオブジェクトの集合
+   */
   this.movedObjects = [];
 
   this.animate();
