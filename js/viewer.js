@@ -28,6 +28,11 @@ function Viewer(config) {
   log('config.type = ' + config.type);
   log('this.type = ' + this.type);
 
+  // タブレット等でブラウザの幅の高さが適切に取得出来なければ
+  // 以下をコメントアウトして手動で設定する
+  // window.innerWidth = 1280;
+  // window.innerHeight = 720;
+
   /**
    * Viewerの幅
    * @return {Number}
