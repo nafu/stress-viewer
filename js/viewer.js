@@ -59,7 +59,7 @@ function Viewer(config) {
    */
   this.angle = 45;
   this.MOUSE_DOWN = false;
-  this.DRAGGING = null;
+  this.DRAGGING = false;
   this.DRAGGING_TIME_MS = 0;
   this.timerID = 0;
 
@@ -590,7 +590,7 @@ Viewer.prototype.onDocumentMouseUp = function(_self) {
     } else if (_self.type == 'c') {
       _self.cutVoxels(event);
     }
-    _self.DRAGGING = null;
+    _self.DRAGGING = false;
     _self.MOUSE_DOWN = false;
     _self.moveEventCount = 0;
   }
@@ -653,12 +653,12 @@ Viewer.prototype.touchend = function(_self) {
         if (_self.DRAGGING && _self.DRAGGING_TIME_MS < 10 && _self.moveEventCount > 0) {
           log('cutVoxels');
           _self.cutVoxels(event);
-          _self.DRAGGING = null;
+          _self.DRAGGING = false;
         }
       } else if (_self.type == 'c') {
         log('cutVoxels');
         _self.cutVoxels(event);
-        _self.DRAGGING = null;
+        _self.DRAGGING = false;
       }
     }
     clearInterval(_self.timerID);
